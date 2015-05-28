@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ASCII fisher</title>
+    <style type='text/css'>
+* {
+    font-family: monospace;
+    line-height: 1.5em;
+}
+section {
+    font-size: 1.5em;
+}
+section + section {
+    display: none;
+}
+a:visited {
+    color: blue;
+}
+    </style>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    
+    <script type='text/javascript'>
+    
+// stolen from stack overflow
+String.prototype.capitalize = function() {
+    return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+};
+
+    </script>
+    <script type='text/javascript'>
+
+var GAME = {};
+var LEVEL = {};
+
+function url(specifics) {
+    return '/gofish/api/' + specifics;
+}
+
+function err(error) {
+    alert(error);
+}
+
+function open(selector) {
+    $('section').hide();
+    $('#' + selector).show();
+}
+
+function generateLevelUrls(levels) {
+    var h = '';
+    for (var i in levels) {
+        if (i <= GAME.player.level) {
+            h += '<a href="#" onclick="selectLevel(' + i + ')">' + levels[i].name + 
+                 '</a>, unlocked. ' + Array(levels[i].stars).join('*') + '<br/ >';
+        } else if (i == GAME.player.level + 1) {
+            h += '<a href="#" onclick="selectLevel(' + i + ')">' + levels[i].name + 
+                 '</a>, cost <strong>' + levels[i].cost + '</strong><br/ >';
+        } else {
+            h += levels[i].name + '<br/ >';
+        }
+    }
+    $('#levels').html(h);
+}
+
+function genCurrentUpdate(list, curr) {
+    if (!curr) {
+        return null;
+    }
+    for (var el in list) {
+        if (list[el].name == curr) {
+            return list[el];
+        }
+    }
+}
+
+function genNextUpdate(list, curr) {
+    if (!curr) {
+        return list[0];
+    }
+    for (var el in list) {
+        if (list[el].name == curr) {
+            return (el < list.length - 1) ? list[parseInt(el,10)+1] : null;
+        }
+    }
+}
+
+function getPerksLine(update) {
+    if (update.time) {
+        return 'travel time ' + update.time + ' min';
+    } else if (update.probability) {
+        return 'success +' + Math.round(update.probability * 100 - 100) + '%';
+    } else if (update.cueDetail) {
+        if (update.cueDetail == 1) {
+            return 'tells the depth';
+        } else {
+            return 'detects fish, better visibility and accuracy';
+        }
+    }
+}
+
+function generateUpdates(updates, playerUpdates) {
+    var html = '';
+    for (var update in updates) {
+        var curr = genCurrentUpdate(updates[update], playerUpdates[update]);
+        var next = genNextUpdate(updates[update], playerUpdates[update]);
+        
+        html += '<div><strong>' + update.capitalize() + ': ';
+        html += ((curr) ? curr.name : 'default' ) + '</strong><br/ >';
+        if (curr) {
+            html += 'Current: ' + getPerksLine(curr) + '<br/ >';
+        }
+        if (next) {
+            html += 'Next: ' + getPerksLine(next) + '<br/ >';
+            html += '<a href="#" onclick="update(\'' + update + '\')">Update to ' + next.name + '</a> (<strong>' + next.price + '</strong>)<br/ >';
+        } else {
+            html += 'Best possible<br/ >';
+        }
+        html += '</div>';
+    }
+    $('#updates').html(html);
+}
+
+function getPlayerModifiers(modifiers, playerModifiers) {
+    var html = '<div>';
+    for (var bait in playerModifiers) {
+        html += bait.capitalize();
+        html += (playerModifiers[bait]) ? ' selected ' : ' <a href="#" onclick="choose(\'' + bait + '\')">select</a> ';
+        html += '<br/ >';
+    }
+    html += '</div>';
+    return html;
+}
+
+function getModifiersToBuy(modifiers, playerModifiers) {
+    var html = '<div>';
+    for (var bait in modifiers) {
+        if (playerModifiers[bait] === undefined) {
+            html += bait.capitalize() + ', price <strong>' + modifiers[bait].price + '</strong>. ';
+            html += '<a href="#" onclick="buy(\'' + bait + '\')">Buy</a><br/ >';
+        }
+    }
+    html += '</div>';
+    return html;
+}
+
+function generateModifiers(modifiers, playerModifiers) {
+    var html = '<strong>You own:</strong><br/ >';
+    html += getPlayerModifiers(modifiers, playerModifiers);
+    html += '<strong>Still to buy:</strong><br/ >';
+    html += getModifiersToBuy(modifiers, playerModifiers);
+    $('#modifiers').html(html);
+}
+
+function generateTrophies(trophies, fish) {
+    var html = '';
+    for (var f in trophies) {
+        html += fish[f].name + ': ' + trophies[f].value + ' kg, <strong>' + trophies[f].rating + '</strong> money<br/ >';
+    }
+    $('#trophies').html(html);
+}
+
+function selectLevel(lvl) {
+    $.getJSON(url('start/' + lvl), function(data) {
+        if (data.error) {
+            err(data.error);
+        }
+        
+        LEVEL = data;
+        drawLevel();
+        open('game');
+    });
+}
+
+function caughtValue(caught) {
+    var value = 0;
+    for (var i in caught) {
+        value += caught[i].value;
+    }
+    return value;
+}
+
+function caughtList(caught) {
+    var list = [];
+    caught.sort(function(a, b) { return (b.value - a.value == 0) ? b.weight - a.weight : b.value - a.value; });
+    for (var i in caught) {
+        list.push(caught[i].weight.toFixed(2) + ' kg ' + 
+                  caught[i].name + '(<strong>+' + caught[i].value + '</strong>)');
+    }
+    return list.join('<br/ >');
+}
+
+function drawLevel() {
+    console.log(LEVEL);
+    $('#time-left').text(LEVEL.level.totalTime - LEVEL.level.time);
+    $('#value-caught').text(caughtValue(LEVEL.caught));
+    $('#info').html('<br/ >');
+    
+    // drawing the map
+    var map = '<pre>';
+    for (var i = 0; i < LEVEL.level.position; i++) {
+        map += ' ';
+    }
+    map += "<b>*</b>\n";
+    
+    // no cues that we know:
+    if (!GAME.player.updates.cues) {
+        for (var j = 0; j < LEVEL.level.map[0].length; j++) {
+            map += "#";
+        }
+        map += "\n";
+    // otherwise, we always know at least the depth
+    } else {
+        var maxDepth = 10;
+        for (var i = 0; i < maxDepth; i++) {
+            for (var j = 0; j < LEVEL.level.map[0].length; j++) {
+                if (i >= LEVEL.level.map[0][j]) {
+                    map += ' ';
+                } else if (j == LEVEL.level.position) {
+                    if (LEVEL.cues[i][0] == -1) {
+                        map += '#';
+                    } else if (LEVEL.cues[i][0] == 0) {
+                        map += '.';
+                    } else {
+                        map += (LEVEL.cues[i][0] > 9) ? 9 : LEVEL.cues[i][0];
+                    }
+                } else {
+                    map += '#';
+                }
+            }
+            map += "\n";
+        }
+    }
+    
+    map += '</pre>';
+    $('#representation').html(map);
+}
+
+function update(upd) {
+    console.log('updating');
+    $.getJSON(url('update/' + upd), function(data) {
+        console.log(data);
+        if (!data.error) {
+            initGame();
+        }
+    });
+}
+
+function choose(bait) {
+    $.getJSON(url('choose/' + bait), function(data) {
+        console.log(data);
+        if (!data.error) {
+            initGame();
+        }
+    });
+}
+
+function buy(bait) {
+    $.getJSON(url('buy/' + bait), function(data) {
+        console.log(data);
+        if (!data.error) {
+            initGame();
+        }
+    });
+}
+
+function move(side) {
+    $.getJSON(url('action/move/' + side), function(data) {
+        if (!data.error) {
+            LEVEL.level.position = data.position;
+            LEVEL.level.time = data.time;
+            LEVEL.cues = data.cues;
+            drawLevel();
+        }
+    });
+}
+
+function fish(side) {
+    $.getJSON(url('action/catchall/1'), function(data) {
+        if (!data.error) {
+            LEVEL.level.time = data.time;
+            LEVEL.cues = data.cues;
+            var fish = data.fishList[0];
+            if (fish) {
+                LEVEL.caught.push(fish);
+            }
+            drawLevel();
+            
+            if (fish) {
+                $('#info').html("You've got " + fish.weight.toFixed(2) + 
+                                " kg " + fish.name + " (<strong>+" + fish.value + "</strong>)");
+            } else {
+                $('#info').text("Nothing was caught");
+            }
+        }
+    });
+}
+
+function end() {
+    $.getJSON(url('end'), function(data) {
+        if (!data.error) {
+            $('#earned-money').text(data.earned);
+            $('#res-total').text(data.money + data.earned);
+            $('#res-caught').html(caughtList(LEVEL.caught));
+            open('results');
+        } else {
+            initGame();
+        }
+    });
+}
+
+function initGame() {
+    $.getJSON(url('getgame'), function(data) {
+        console.log(data);
+        GAME = data;
+        $('#start-total').text(GAME.player.money);
+        generateLevelUrls(GAME.levels);
+        generateUpdates(GAME.updates, GAME.player.updates);
+        generateModifiers(GAME.modifiers, GAME.player.modifiers);
+        generateTrophies(GAME.trophies, GAME.fish);
+        open('start');
+    });
+}
+
+$(document).ready(initGame);
+    </script>
+</head>
+<body>
+    <header><h1>ASCII fisher!</h1></header>
+    
+    <section id="start">
+        Money: <strong id="start-total"></strong><br/>
+        <strong>----- [ Select level ] -----</strong><br/>
+        <div id="levels"></div>
+        <br/>
+        <strong>----- [ Updates ] ----------</strong><br/>
+        <div id="updates"></div>
+        <br/>
+        <strong>----- [ Baits ] ------------</strong><br/>
+        <div id="modifiers"></div>
+        <br/>
+        <strong>----- [ Trophies ] ---------</strong><br/>
+        <div id="trophies"></div>
+    </section>
+    
+    <section id="game">
+        Time left: <strong id="time-left"></strong>,
+        Value caught <strong id="value-caught"></strong><br/>
+        <div id="actions">
+            <a href="#" onclick="move('left')">left</a>,
+            <a href="#" onclick="move('right')">right</a>,
+            <a href="#" onclick="fish()">fish</a>,
+            <a href="#" onclick="end()">end level</a>
+        </div>
+        <div id="info"></div>
+        <div id="representation"></div>
+    </section>
+    
+    <section id="results">
+        Earned <strong id="earned-money"></strong> money, 
+        total: <strong id="res-total"></strong><br/>
+        <a href="#" onclick="initGame()">Return to level selection?</a><br/>
+        <strong>You have caught:</strong>
+        <div id="res-caught"></div>
+        
+    </section>
+    
+</body>
+</html>

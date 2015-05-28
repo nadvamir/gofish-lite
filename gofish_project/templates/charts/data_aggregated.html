@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aggregated data explorer</title>
+    <style type='text/css'>
+* {
+    font-family: monospace;
+    line-height: 1.5em;
+}
+section {
+    font-size: 1.5em;
+}
+a:visited {
+    color: blue;
+}
+    </style>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    
+    <!-- Our js libraries -->
+    <script type="text/javascript" src="/static/js/graphs.js"></script>
+    <script type="text/javascript" src="/static/js/api.js"></script>
+    <script type="text/javascript">
+function getSelected(selector) {
+    return $(selector).find(':selected').val();
+}
+
+function drawTheBarChart() {
+    return drawBarData({x: getSelected('#barX')});
+}
+
+function drawTheBoxChart() {
+    return drawBoxData({x: getSelected('#boxX'), y: getSelected('#boxY')});
+}
+    </script>
+    
+</head>
+<body>
+    <header><h1>Aggregated data explorer</h1></header>
+    
+    <section>
+        <h2>Distribution of data points:</h2>
+        <p>
+            <label for="barX">x axis: </label>
+            <select id="barX">
+                {% for key, val in choices.bar.items %}
+                    <option value="{{key}}">{{val}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <button onclick="drawTheBarChart()">Draw Chart</button>
+        </p>
+        <div id="chart-div"></div>
+        <h2>Distributions depending on...</h2>
+        <p>
+            <label for="boxX">x axis: </label>
+            <select id="boxX">
+                {% for key, val in choices.boxX.items %}
+                    <option value="{{key}}">{{val}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label for="boxY">y axis: </label>
+            <select id="boxY">
+                {% for key, val in choices.boxY.items %}
+                    <option value="{{key}}">{{val}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <button onclick="drawTheBoxChart()">Draw Chart</button>
+        </p>
+        <div id="chart-div2"></div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User data explorer</title>
+    <style type='text/css'>
+* {
+    font-family: monospace;
+    line-height: 1.5em;
+}
+section {
+    font-size: 1.5em;
+}
+a:visited {
+    color: blue;
+}
+label {
+    width: 7em;
+    display: inline-block;
+}
+    </style>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    
+    <!-- Our js libraries -->
+    <script type="text/javascript" src="/static/js/graphs.js"></script>
+    <script type="text/javascript" src="/static/js/api.js"></script>
+    <script type="text/javascript">
+function getSelected(selector) {
+    return $(selector).find(':selected').text();
+}
+
+function getFilters() {
+    var filters = {username: getSelected('#username')};
+    getSelected('#gameNum')   != '--' && !!(filters.gameNum   = getSelected('#gameNum'));
+    getSelected('#cueDetail') != '--' && !!(filters.cueDetail = getSelected('#cueDetail'));
+    getSelected('#level')     != '--' && !!(filters.level     = getSelected('#level'));
+    getSelected('#moveCost')  != '--' && !!(filters.moveCost  = getSelected('#moveCost'));
+    return filters;
+}
+
+function getDataF(selectorF) {
+    return function(data) { return dataF(data, selectorF); };
+}
+
+function dataF(data, selectorF) {
+    var result = [];
+    for (var i in data) result.push(selectorF(data[i], parseInt(i)));
+    return result;
+}
+
+function optTimeF(row, i)   { return [i, row.timeSpent - row.optTime, row.timeSpent, row.optTime]; }
+function optMoneyF(row, i)  { return [i, row.earnedM - row.optimalM, row.earnedM, row.optimalM]; }
+function loptTimeF(row, i)  { return [i, row.timeSpent - row.locOptT, row.timeSpent, row.locOptT]; }
+function loptMoneyF(row, i) { return [i, row.earnedM - row.locOptM, row.earnedM, row.locOptM]; }
+
+function drawOptimalTimeChart() {
+    drawData(getFilters(), {
+        title: 'Optimal Time', 
+        names: ['#', 'Optimality', 'Time Stayed', 'Optimal Time'], 
+        dataF: getDataF(optTimeF) 
+    });
+}
+
+function drawOptimalMoneyChart() {
+    drawData(getFilters(), {
+        title: 'Optimal Money', 
+        names: ['#', 'Optimality', 'Money Earned', 'Optimal Money'], 
+        dataF: getDataF(optMoneyF) 
+    });
+}
+
+function drawLocallyOptimalTimeChart() {
+    drawData(getFilters(), {
+        title: 'Locally Optimal Time', 
+        names: ['#', 'Optimality', 'Time Stayed', 'Locally Optimal Time'], 
+        dataF: getDataF(loptTimeF) 
+    });
+}
+
+function drawLocallyOptimalMoneyChart() {
+    drawData(getFilters(), {
+        title: 'Locally Optimal Money', 
+        names: ['#', 'Optimality', 'Money Earned', 'Locally Optimal Money'], 
+        dataF: getDataF(loptMoneyF) 
+    });
+}
+
+    </script>
+    
+</head>
+<body>
+    <header><h1>User data explorer</h1></header>
+    
+    <section>
+        <h2>Filters:</h2>
+        <p>
+            <label for="username">Username: </label>
+            <select id="username">
+                {% for i in choices.usernames %}
+                    <option value="{{i.username}}">{{i.username}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label for="gameNum">Game # ...: </label>
+            <select id="gameNum">
+                <option value="--">--</option>
+                {% for i in choices.gameNums %}
+                    <option value="{{i.gameNum}}">{{i.gameNum}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label for="cueDetail">Cue Detail: </label>
+            <select id="cueDetail">
+                <option value="--">--</option>
+                {% for i in choices.cueDetails %}
+                    <option value="{{i.cueDetail}}">{{i.cueDetail}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label for="level">Level: </label>
+            <select id="level">
+                <option value="--">--</option>
+                {% for i in choices.levels %}
+                    <option value="{{i.level}}">{{i.level}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label for="moveCost">Move Cost: </label>
+            <select id="moveCost">
+                <option value="--">--</option>
+                {% for i in choices.moveCosts %}
+                    <option value="{{i.moveCost}}">{{i.moveCost}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <h2>Charts:</h2>
+        <p>
+            <button onclick="drawOptimalTimeChart()">Optimal Time</button>
+            <button onclick="drawOptimalMoneyChart()">Optimal Money</button>
+            <button onclick="drawLocallyOptimalTimeChart()">Locally Optimal Time</button>
+            <button onclick="drawLocallyOptimalMoneyChart()">Locally Optimal Money</button>
+        </p>
+        <div id="chart-div"/>
+    </section>
+</body>
+</html>

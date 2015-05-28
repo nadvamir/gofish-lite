@@ -1,0 +1,35 @@
+{% extends 'gofish/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body_block %}
+    <h1>Home Page</h1>
+
+    <a href='/gofish/levelselect/'><h2>Play</h2></a>
+    <a href='/gofish/ascii/'><h2>Play ASCII!</h2></a>
+
+    <script>
+function doRequest(url) {
+$.getJSON(url, function(data) {
+    $('#response').text(JSON.stringify(data, undefined, 2));
+});
+}
+    </script>
+    <h1>Ghetto game version:</h1>
+    <ul>
+        <li><a href="#" onclick="doRequest('/gofish/api/start/0/')">Start level 1</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/start/1/')">Start level 2</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/start/2/')">Start level 3</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/end/')">Finish game</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/action/move/left/')">Move left</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/action/move/right/')">Move right</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/action/fish/5/')">Inspect next 5 fish</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/action/catch/1/')">Catch next fish</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/action/catchall/1/')">Catch next fish or Nothing</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/action/catch/1,0,1/')">Catch next fish, miss following, catch third</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/getgame/')">Game info</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/getmodifiers/')">Modifiers info</a></li>
+        <li><a href="#" onclick="doRequest('/gofish/api/getupdates/')">Updates info</a></li>
+    </ul>
+    <pre id="response">Your response will appear here</pre>
+{% endblock %}

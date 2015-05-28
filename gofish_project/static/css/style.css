@@ -1,0 +1,254 @@
+@import url(http://fonts.googleapis.com/css?family=Geo);
+
+* {
+    font-size: 100%;
+    font-family: Geo, sans-serif;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.right { float: right }
+.left { float: left }
+
+/* ----------------------------------------------------------- */
+body {
+    background: url('/static/images/upfeathers.png');
+}
+
+body > section {
+    width: 800px;
+    height: 600px;
+    margin: 0 auto;
+    box-shadow: 0 0 10px black;
+    background: white;
+    position: relative;
+}
+
+/* ----------------------------------------------------------- */
+nav {
+    position: absolute;
+    left: -40px;
+    width: 40px;
+    background: #ffcc5e;
+    /*box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);*/
+}
+
+nav a, .top-bar a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 12px;
+    color: white;
+}
+
+nav a {
+    border-bottom: 1px solid #7f7f7f;
+    background: #3e4cb7;
+}
+nav a:hover {
+    background: #8693f4;
+}
+
+/* ----------------------------------------------------------- */
+#loading {
+    visibility: none;
+}
+
+#loading > div {
+    position: fixed;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+    /*background: rgba(0, 0, 0, 0.1);*/
+    cursor: wait;
+}
+
+/* ----------------------------------------------------------- */
+#page {
+}
+
+/* ----------------------------------------------------------- */
+.list li, .shop-item, h2 {
+    padding: 8px 10px;
+    list-style: none;
+}
+.list li a, .shop-item a {
+    color: #3e4cb7;
+    font-size: 26px;
+}
+.list li a:hover, .shop-item a:hover {
+    color: #8693f4;
+}
+.list li strong, .list li span, .shop-item strong, .shop-item span, h2 {
+    font-size: 26px;
+}
+.list {
+    overflow-y: auto;
+    max-height: 559px;
+}
+
+/* ----------------------------------------------------------- */
+.top-bar {
+    height: 40px;
+    line-height: 38px;
+    vertical-align: middle;
+    padding-left: 5px;
+    border-bottom: 1px solid #7f7f7f;
+}
+
+.top-bar a {
+    background: #23aa00;
+    width: 100px;
+}
+.top-bar a:hover {
+    background: #9bcc90;
+}
+
+.day-ind {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.time-indicator {
+    vertical-align: middle;
+    display: inline-block;
+    height: 10px;
+}
+.time-left {
+    background: #3e4cb7;
+    background: #23aa00;
+    margin-left: 5px;
+}
+.time-full {
+    background: #7f7f7f;
+}
+
+.money-ind {
+    margin-right: 5px;
+}
+.money-ind span, .day-ind span, .large {
+    font-size: 26px;
+}
+
+/* ----------------------------------------------------------- */
+#game-actions {
+    width: 800px;
+    margin-top: 0px;
+    background: #3e4cb7;
+}
+#game-actions a {
+    display: inline-block;
+    width: 33.3333%;
+    background: #3e4cb7;
+    color: white;
+    font-size: 20px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    vertical-align: center;
+}
+#game-actions a:hover {
+    background: #8693f4;
+}
+
+/* ----------------------------------------------------------- */
+#info-area {
+    height: 69px;
+    font-size: 20px;
+    padding: 5px;
+    text-align: center;
+}
+#info-area strong {
+    font-size: 26px;
+    font-weight: normal;
+}
+#info-area div {
+    padding: 5px;
+}
+#info-area .none {
+    display: none;
+}
+
+div.fish-img {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    height: 26px;
+    width: 52px;
+    margin-right: 2px;
+}
+div.fish-img.Shoe {
+    background-image: url('/static/images/shoe.png');
+    /*width: 26;*/
+}
+div.fish-img.Cod {
+    background-image: url('/static/images/cod.png');
+    /*width: 26;*/
+}
+div.fish-img.Bream {
+    background-image: url('/static/images/bream.gif');
+    /*width: 43px;*/
+}
+div.fish-img.Bass {
+    background-image: url('/static/images/bass.gif');
+    /*width: 52px;*/
+}
+div.fish-img.Pike {
+    background-image: url('/static/images/pike.gif');
+    /*width: 28px;*/
+}
+div.fish-img.Salmon {
+    background-image: url('/static/images/salmon.gif');
+    /*width: 86px;*/
+}
+div.fish-img.Catfish {
+    background-image: url('/static/images/catfish.gif');
+    /*width: 33px;*/
+}
+div.fish-img.Tuna {
+    background-image: url('/static/images/tuna.gif');
+    /*width: 52px;*/
+}
+
+/* ----------------------------------------------------------- */
+#game-map {
+    height: 440px;
+    background: url('/static/images/green_gobbler.png');
+    line-height: 9px; /* otherwise we get spaces... */
+}
+
+#game-map p:first-child {
+    background: white;
+}
+
+#game-map span {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+}
+
+#game-map .boat--1 { background-image: url('/static/images/boat-0.png'); }
+#game-map .boat-0 { background-image: url('/static/images/boat-1.png'); }
+#game-map .boat-1 { background-image: url('/static/images/boat-2.png'); }
+#game-map .boat-2 { background-image: url('/static/images/boat-3.png'); }
+
+#game-map .light-water {
+    background: #8693f4;
+}
+#game-map .light-water.fish-1 { background-image: url('/static/images/fish-1.png'); }
+#game-map .light-water.fish-2 { background-image: url('/static/images/fish-2.png'); }
+#game-map .light-water.fish-3 { background-image: url('/static/images/fish-3.png'); }
+#game-map .light-water.fish-4 { background-image: url('/static/images/fish-4.png'); }
+#game-map .light-water.fish-5 { background-image: url('/static/images/fish-5.png'); }
+#game-map .light-water.fish-6 { background-image: url('/static/images/fish-6.png'); }
+#game-map .light-water.fish-7 { background-image: url('/static/images/fish-7.png'); }
+#game-map .light-water.fish-8 { background-image: url('/static/images/fish-8.png'); }
+#game-map .light-water.fish-9 { background-image: url('/static/images/fish-9.png'); }
+
+#game-map .dark-water {
+    background: #3e4cb7;
+}
