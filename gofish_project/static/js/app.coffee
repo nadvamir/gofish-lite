@@ -165,25 +165,21 @@ class game.Fish
 class game.Player
     constructor: (p) ->
         @money = m.prop p.money
-        @boat  = m.prop p.boat
-        @line  = m.prop p.line
-        @cue   = m.prop p.cue
-        @lineN = m.prop p.lineN
-        @cueN  = m.prop p.cueN
 
 # game model
 class game.Game
     constructor: (g) ->
-        @level        = m.prop g.level
+        @level     = m.prop g.level
         @day       = m.prop g.day
         @name      = m.prop g.name
         @totalTime = m.prop g.totalTime
         @timeLeft  = m.prop g.timeLeft
         @valCaught = m.prop g.valCaught
-        @showDepth = m.prop g.showDepth
-        @map       = m.prop g.map
+        @topValue  = m.prop g.topValue
         @position  = m.prop g.position
-        @cues      = m.prop g.cues
+        @weather   = m.prop g.weather
+        @weatherN  = m.prop g.weatherN
+        @boat      = m.prop g.boat
         @caught    = m.prop []
         for f in g.caught
             @caught().push new game.Fish(f)
@@ -214,7 +210,6 @@ game.vm = do ->
                 return m.route '/end'
             g = game.vm.game
             g.timeLeft(g.totalTime() - parseInt(r.time, 10))
-            g.cues(r.cues)
 
         move = (r) ->
             common(r)
@@ -232,8 +227,8 @@ game.vm = do ->
                 g = game.vm.game
                 g.valCaught(g.valCaught() + fish.value)
                 f = new game.Fish(fish)
-                divisor = g.level() == 0 and 1 or 5 * g.level()
-                importance = 3 + Math.ceil(f.value() / divisor)
+                divisor =
+                importance = 3 + Math.ceil(10 * f.value() / g.topValue())
                 importance = importance > 140 and 140 or importance
                 game.vm.addInfo([
                     'You\'ve caught a ',
@@ -250,16 +245,7 @@ game.vm = do ->
     inGame: ->
         @game != null
 
-    getWaterClass: (i, j) ->
-        if i < @game.map()[0][j]
-            if j != @game.position() or @game.cues()[i][0] + 1 < 0.001
-                'dark-water'
-            else
-                cue = @game.cues()[i][0]
-                cue = 9 if cue > 9
-                "light-water.fish-#{cue}"
-        else
-            'ground'
+    getWaterClass: (i, j) -> 'dark-water'
 
     # add info text and animate, depending on importance
     addInfo: (text, importance) ->
@@ -327,19 +313,8 @@ gameActions.actions = -> [{
 # namespace
 infoArea = {}
 
-# classes for different level of cue detail
-infoArea.cues = [
-    'none',
-    'fa-map-marker',
-    'fa-camera-retro',
-    'fa-volume-up',
-    'fa-wifi',
-    'fa-user'
-]
-
-# classes for different lines
-infoArea.lines = ['none', 'fa-angle-left', 'fa-angle-double-left']
-
+# classes for different weathers
+infoArea.weather = ['fa-sun-o', 'fa-cloud', 'fa-sellsy']
 
 # --------------------------------------------------------------
 # game:gameMap module
@@ -443,7 +418,6 @@ class end.controller
         get('/end').then (r) =>
             @earned  = m.prop r.earned
             @maximum = m.prop r.maximum
-            @avg     = m.prop r.avg
             @money   = m.prop r.money
             @stars   = m.prop r.stars
 
@@ -534,28 +508,21 @@ gameActions.view = -> [
 infoArea.view = -> m('div#info-area', [
     game.vm.info()
     m('div.right.fa', {
-        class: infoArea.cues[game.vm.player.cue() + 1]
-        title: game.vm.player.cueN()
-    })
-    m('div.right.fa', {
-        class: infoArea.lines[game.vm.player.line() + 1]
-        title: game.vm.player.lineN()
+        class: infoArea.weather[game.vm.game.weather()]
+        title: game.vm.game.weatherN()
     })
 ])
 
 
 # a sub view for displaying boat
 gameMap.boatSW = -> m('p', [
-    m('span.boat-' + game.vm.player.boat(), {style:
+    m('span.boat-' + game.vm.game.boat(), {style:
         {marginLeft: gameMap.TILE_W * game.vm.game.position() + 'px'}})
 ])
 
 # a sub-view for displaying actual water depth map
 gameMap.waterSW = ->
-    if game.vm.game.showDepth()
-        [m('p', [m('span.' + game.vm.getWaterClass(i, j)) for j in [0...20]]) for i in [0...10]]
-    else
-        [m('span.dark-water') for i in [0...20]]
+    [m('p', [m('span.' + game.vm.getWaterClass(i, j)) for j in [0...20]]) for i in [0...10]]
 
 # view
 gameMap.view = -> m('div#game-map', [

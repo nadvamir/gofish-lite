@@ -191,11 +191,6 @@ game.Fish = (function() {
 game.Player = (function() {
   function Player(p) {
     this.money = m.prop(p.money);
-    this.boat = m.prop(p.boat);
-    this.line = m.prop(p.line);
-    this.cue = m.prop(p.cue);
-    this.lineN = m.prop(p.lineN);
-    this.cueN = m.prop(p.cueN);
   }
 
   return Player;
@@ -211,10 +206,11 @@ game.Game = (function() {
     this.totalTime = m.prop(g.totalTime);
     this.timeLeft = m.prop(g.timeLeft);
     this.valCaught = m.prop(g.valCaught);
-    this.showDepth = m.prop(g.showDepth);
-    this.map = m.prop(g.map);
+    this.topValue = m.prop(g.topValue);
     this.position = m.prop(g.position);
-    this.cues = m.prop(g.cues);
+    this.weather = m.prop(g.weather);
+    this.weatherN = m.prop(g.weatherN);
+    this.boat = m.prop(g.boat);
     this.caught = m.prop([]);
     _ref = g.caught;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -259,8 +255,7 @@ game.vm = (function() {
           return m.route('/end');
         }
         g = game.vm.game;
-        g.timeLeft(g.totalTime() - parseInt(r.time, 10));
-        return g.cues(r.cues);
+        return g.timeLeft(g.totalTime() - parseInt(r.time, 10));
       };
       move = function(r) {
         common(r);
@@ -278,8 +273,7 @@ game.vm = (function() {
           g = game.vm.game;
           g.valCaught(g.valCaught() + fish.value);
           f = new game.Fish(fish);
-          divisor = g.level() === 0 && 1 || 5 * g.level();
-          importance = 3 + Math.ceil(f.value() / divisor);
+          divisor = importance = 3 + Math.ceil(10 * f.value() / g.topValue());
           importance = importance > 140 && 140 || importance;
           game.vm.addInfo(['You\'ve caught a ', caught.vm.getItemView.apply(f)], importance);
           return g.caught().push(f);
@@ -300,20 +294,7 @@ game.vm = (function() {
       return this.game !== null;
     },
     getWaterClass: function(i, j) {
-      var cue;
-      if (i < this.game.map()[0][j]) {
-        if (j !== this.game.position() || this.game.cues()[i][0] + 1 < 0.001) {
-          return 'dark-water';
-        } else {
-          cue = this.game.cues()[i][0];
-          if (cue > 9) {
-            cue = 9;
-          }
-          return "light-water.fish-" + cue;
-        }
-      } else {
-        return 'ground';
-      }
+      return 'dark-water';
     },
     addInfo: function(text, importance) {
       var end, maxImp, timeOutF, value;
@@ -389,9 +370,7 @@ gameActions.actions = function() {
 
 infoArea = {};
 
-infoArea.cues = ['none', 'fa-map-marker', 'fa-camera-retro', 'fa-volume-up', 'fa-wifi', 'fa-user'];
-
-infoArea.lines = ['none', 'fa-angle-left', 'fa-angle-double-left'];
+infoArea.weather = ['fa-sun-o', 'fa-cloud', 'fa-sellsy'];
 
 gameMap = {};
 
@@ -498,7 +477,6 @@ end.controller = (function() {
       return function(r) {
         _this.earned = m.prop(r.earned);
         _this.maximum = m.prop(r.maximum);
-        _this.avg = m.prop(r.avg);
         _this.money = m.prop(r.money);
         return _this.stars = m.prop(r.stars);
       };
@@ -583,18 +561,15 @@ gameActions.view = function() {
 infoArea.view = function() {
   return m('div#info-area', [
     game.vm.info(), m('div.right.fa', {
-      "class": infoArea.cues[game.vm.player.cue() + 1],
-      title: game.vm.player.cueN()
-    }), m('div.right.fa', {
-      "class": infoArea.lines[game.vm.player.line() + 1],
-      title: game.vm.player.lineN()
+      "class": infoArea.weather[game.vm.game.weather()],
+      title: game.vm.game.weatherN()
     })
   ]);
 };
 
 gameMap.boatSW = function() {
   return m('p', [
-    m('span.boat-' + game.vm.player.boat(), {
+    m('span.boat-' + game.vm.game.boat(), {
       style: {
         marginLeft: gameMap.TILE_W * game.vm.game.position() + 'px'
       }
@@ -604,38 +579,25 @@ gameMap.boatSW = function() {
 
 gameMap.waterSW = function() {
   var i, j;
-  if (game.vm.game.showDepth()) {
-    return [
-      (function() {
-        var _i, _results;
-        _results = [];
-        for (i = _i = 0; _i < 10; i = ++_i) {
-          _results.push(m('p', [
-            (function() {
-              var _j, _results1;
-              _results1 = [];
-              for (j = _j = 0; _j < 20; j = ++_j) {
-                _results1.push(m('span.' + game.vm.getWaterClass(i, j)));
-              }
-              return _results1;
-            })()
-          ]));
-        }
-        return _results;
-      })()
-    ];
-  } else {
-    return [
-      (function() {
-        var _i, _results;
-        _results = [];
-        for (i = _i = 0; _i < 20; i = ++_i) {
-          _results.push(m('span.dark-water'));
-        }
-        return _results;
-      })()
-    ];
-  }
+  return [
+    (function() {
+      var _i, _results;
+      _results = [];
+      for (i = _i = 0; _i < 10; i = ++_i) {
+        _results.push(m('p', [
+          (function() {
+            var _j, _results1;
+            _results1 = [];
+            for (j = _j = 0; _j < 20; j = ++_j) {
+              _results1.push(m('span.' + game.vm.getWaterClass(i, j)));
+            }
+            return _results1;
+          })()
+        ]));
+      }
+      return _results;
+    })()
+  ];
 };
 
 gameMap.view = function() {

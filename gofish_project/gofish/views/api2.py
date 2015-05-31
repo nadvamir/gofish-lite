@@ -7,6 +7,7 @@ import json
 
 import gofish.models as models
 import gofish.engine.gamedef as gamedef
+import gofish.engine.level as lvl
 
 #################################################################
 # API v2
@@ -17,7 +18,7 @@ def v2home(request):
     player   = models.Player.initialise(request.user)
     response = {'levels': []}
 
-    for i in range(len(gamedef.GAME['levels'])):
+    for i in range(len(gamedef.LEVELS)):
         # star scores for player
         record = player.getAchievement('moneyIn' + str(i))
         stars = record.rating if None != record else 0
@@ -31,10 +32,10 @@ def v2home(request):
         # putting it all together
         response['levels'].append({
             'id'       : i,
-            'name'     : gamedef.GAME['levels'][i]['name'],
+            'name'     : gamedef.LEVELS[i]['name'],
             'unlocked' : unlocked,
             'active'   : active,
-            'cost'     : gamedef.GAME['levels'][i]['cost'],
+            'cost'     : lvl.cost(i),
             'stars'    : stars,
             'highS'    : highS,
             'maxHighS' : maxHighS,
@@ -48,11 +49,6 @@ def v2player(request):
     player   = models.Player.initialise(request.user)
     response = {'player': {
         'money' : player.money,
-        'boat'  : getIndex(player, 'boats'),
-        'line'  : getIndex(player, 'lines'),
-        'cue'   : getIndex(player, 'cues'),
-        'lineN' : getName(player, 'lines'),
-        'cueN'  : getName(player, 'cues')
     }}
     return HttpResponse(json.dumps(response), content_type="application/json")
 
@@ -70,13 +66,14 @@ def v2game(request):
         'day'       : player.numGames,
         'name'      : game.level['name'],
         'totalTime' : game.level['totalTime'],
-        'timeLeft'  : game.level['totalTime']-game.level['time'],
+        'timeLeft'  : game.level['totalTime'] - game.level['time'],
         'valCaught' : caught,
-        'showDepth' : 'cues' in player.updates,
-        'map'       : game.level['map'],
+        'topValue'  : lvl.topValue(game.level['index']),
         'position'  : game.level['position'],
-        'cues'      : game.getCues(),
         'caught'    : game.caught,
+        'weather'   : game.level['weather'],
+        'weatherN'  : gamedef.WEATHER[game.level['weather']]['name'],
+        'boat'      : game.level['boat'],
     }}
 
     return HttpResponse(json.dumps(response), content_type="application/json")
@@ -107,88 +104,4 @@ def v2trophies(request):
         })
 
     return HttpResponse(json.dumps(response), content_type="application/json")
-
-# get the shop items
-@allow_lazy_user
-def v2shop(request):
-    response = {
-        'boats' : [],
-        'lines' : [],
-        'cues'  : []
-    }
-
-    # add a default boat
-    response['boats'].append({
-        'name' : 'Raft',
-        'cost' : 0,
-        'perk' : 'It floats.'
-    })
-    # add a default line
-    response['lines'].append({
-        'name' : 'Old Fishing Line',
-        'cost' : 0,
-        'perk' : 'Found in the attic.'
-    })
-    # add a default queue
-    response['cues'].append({
-        'name' : 'Your Eyes',
-        'cost' : 0,
-        'perk' : 'You can\'t quite see underwater...'
-    })
-
-    # build boats
-    lastSpeed = gamedef.MOVE_COST
-    lastName = 'Raft'
-    for boat in gamedef.GAME['updates']['boats']:
-        response['boats'].append({
-            'name' : boat['name'],
-            'cost' : boat['price'],
-            'perk' : '<span>' + str(round(
-                (gamedef.MOVE_COST + boat['time']) \
-                / 1.0 / lastSpeed * 100)) + \
-                '%</span> faster than a ' + lastName
-        })
-        lastSpeed = gamedef.MOVE_COST + boat['time']
-        lastName = boat['name']
-
-    # build lines
-    for line in gamedef.GAME['updates']['lines']:
-        response['lines'].append({
-            'name' : line['name'],
-            'cost' : line['price'],
-            'perk' : '<span>' + \
-                    str(line['probability'] * 100 - 100) + \
-                    '%</span> more fish!'
-        })
-
-    # build cues
-    cues = gamedef.GAME['updates']['cues']
-    response['cues'].append({
-        'name' : cues[0]['name'],
-        'cost' : cues[0]['price'],
-        'perk' : 'It shows you how deep water is'
-    })
-    for i in range(1, len(cues)):
-        response['cues'].append({
-            'name' : cues[i]['name'],
-            'cost' : cues[i]['price'],
-            'perk' : 'It shows fish up to <span>' + \
-                    str(cues[i]['depth']) + \
-                    '</span> tiles below you with a <span>' + \
-                    str(cues[i]['accuracy']) + \
-                    '%</span> accuracy'
-        })
-
-    return HttpResponse(json.dumps(response), content_type="application/json")
-
-################################################################
-# Helpers
-################################################################
-# get index for a player update
-def getIndex(player, update):
-    return -1 if update not in player.updates else gamedef.getIndex(player.updates[update], update)
-
-# get the name of a player's update
-def getName(player, update):
-    return player.updates.get(update, '')
 

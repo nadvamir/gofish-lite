@@ -6,7 +6,6 @@ import json
 import time
 
 from models import DataPoint, EndGame
-from optimise import *
 
 #################################################################
 # CHART ADMIN

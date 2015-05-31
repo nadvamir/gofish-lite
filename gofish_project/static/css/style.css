@@ -231,10 +231,10 @@ div.fish-img.Tuna {
     height: 40px;
 }
 
-#game-map .boat--1 { background-image: url('/static/images/boat-0.png'); }
-#game-map .boat-0 { background-image: url('/static/images/boat-1.png'); }
-#game-map .boat-1 { background-image: url('/static/images/boat-2.png'); }
-#game-map .boat-2 { background-image: url('/static/images/boat-3.png'); }
+#game-map .boat-0 { background-image: url('/static/images/boat-0.png'); }
+#game-map .boat-1 { background-image: url('/static/images/boat-1.png'); }
+#game-map .boat-2 { background-image: url('/static/images/boat-2.png'); }
+#game-map .boat-3 { background-image: url('/static/images/boat-3.png'); }
 
 #game-map .light-water {
     background: #8693f4;

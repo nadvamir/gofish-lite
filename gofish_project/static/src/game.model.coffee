@@ -16,25 +16,21 @@ class game.Fish
 class game.Player
     constructor: (p) ->
         @money = m.prop p.money
-        @boat  = m.prop p.boat
-        @line  = m.prop p.line
-        @cue   = m.prop p.cue
-        @lineN = m.prop p.lineN
-        @cueN  = m.prop p.cueN
 
 # game model
 class game.Game
     constructor: (g) ->
-        @level        = m.prop g.level
+        @level     = m.prop g.level
         @day       = m.prop g.day
         @name      = m.prop g.name
         @totalTime = m.prop g.totalTime
         @timeLeft  = m.prop g.timeLeft
         @valCaught = m.prop g.valCaught
-        @showDepth = m.prop g.showDepth
-        @map       = m.prop g.map
+        @topValue  = m.prop g.topValue
         @position  = m.prop g.position
-        @cues      = m.prop g.cues
+        @weather   = m.prop g.weather
+        @weatherN  = m.prop g.weatherN
+        @boat      = m.prop g.boat
         @caught    = m.prop []
         for f in g.caught
             @caught().push new game.Fish(f)
@@ -65,7 +61,6 @@ game.vm = do ->
                 return m.route '/end'
             g = game.vm.game
             g.timeLeft(g.totalTime() - parseInt(r.time, 10))
-            g.cues(r.cues)
 
         move = (r) ->
             common(r)
@@ -83,8 +78,8 @@ game.vm = do ->
                 g = game.vm.game
                 g.valCaught(g.valCaught() + fish.value)
                 f = new game.Fish(fish)
-                divisor = g.level() == 0 and 1 or 5 * g.level()
-                importance = 3 + Math.ceil(f.value() / divisor)
+                divisor =
+                importance = 3 + Math.ceil(10 * f.value() / g.topValue())
                 importance = importance > 140 and 140 or importance
                 game.vm.addInfo([
                     'You\'ve caught a ',
@@ -101,16 +96,7 @@ game.vm = do ->
     inGame: ->
         @game != null
 
-    getWaterClass: (i, j) ->
-        if i < @game.map()[0][j]
-            if j != @game.position() or @game.cues()[i][0] + 1 < 0.001
-                'dark-water'
-            else
-                cue = @game.cues()[i][0]
-                cue = 9 if cue > 9
-                "light-water.fish-#{cue}"
-        else
-            'ground'
+    getWaterClass: (i, j) -> 'dark-water'
 
     # add info text and animate, depending on importance
     addInfo: (text, importance) ->
