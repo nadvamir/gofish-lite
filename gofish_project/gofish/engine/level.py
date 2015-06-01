@@ -38,7 +38,7 @@ def optEarnings(index, weather):
     b = moveC(index)
     optT = w * b - b
     optE = sum([vf(i) for i in range(1, int(optT)+1)])
-    return int(optE * TOTAL_TIME / optT) # a very rough estimate
+    return int(optE * TOTAL_TIME / (optT + b)) # a very rough estimate
 
 # fish value function for a game with given parameters
 def valueF(index, weather):
