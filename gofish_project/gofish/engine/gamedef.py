@@ -27,10 +27,10 @@ BOATS        = [{
 }]
 WEATHER      = [{
     'name': 'Sunny',
-    'mult': 4.0
+    'mult': 6.0
 }, {
     'name': 'Cloudy',
-    'mult': 3.0
+    'mult': 4.0
 }, {
     'name': 'Rainy',
     'mult': 2.0
