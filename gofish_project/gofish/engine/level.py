@@ -9,7 +9,7 @@ def cost(index):
         return 0
     times = LEVELS[index-1]['toPlay']
     # times to play x optimal earnings for each weather group
-    optE = sum([optEarnings(index, i) for i in range(0, len(WEATHER))])
+    optE = sum([optEarnings(index-1, i) for i in range(0, len(WEATHER))])
     return int(IMPLIED_PERF * times * optE)
 
 # a level object
