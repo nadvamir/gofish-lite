@@ -149,6 +149,8 @@ class Game(models.Model):
         logger = logging.getLogger('gofish')
 
         levelInfo   = self
+        weather     = int(
+                gamedef.WEATHER[self.level['weather']]['mult'])
         pos         = self.level['position']
         timeSpent   = self.level['timeInLoc'][pos]
         optimalTime = self.getOptimalTime(pos)
@@ -157,11 +159,11 @@ class Game(models.Model):
         optimalM    = int(self.getMoneyEarnedIn(pos, optimalTime))
         localOptM   = int(self.getMoneyEarnedIn(pos, localOptT))
         endGame     = '1' if endGame else '0'
-        moveCost    = lvl.moveC(self.level['index'])
+        moveCost    = inc(lvl.moveC(self.level['index']))
         createdAt   = int(time.time())
 
         msg = [
-            levelInfo, moveCost, endGame,
+            levelInfo, moveCost, endGame, weather,
             timeSpent, optimalTime, localOptT,
             moneyEarned, optimalM, localOptM,
             createdAt
@@ -203,20 +205,22 @@ class Game(models.Model):
 
         # rest
         gameNr    = self.player.numGames
-        player    = self.player.user.username
+        player    = self.player.user.id
         level     = self.level['index']
+        weather   = int(
+                gamedef.WEATHER[self.level['weather']]['mult'])
         moveCost  = int(lvl.moveC(self.level['index']))
         maxEarn   = int(self.getMaxEarnings(moveCost))
         optEarn   = self.getOptEarnings(moveCost)
         lOptEarn  = self.getOptEarnings(moveCost, local=True)
 
         msg = [
-            player, gameNr, level,
+            player, gameNr, level, weather,
             moveCost, int(earned),
             maxEarn, optEarn, lOptEarn
         ]
 
-        logger.info(' '.join(map(str, msg)))
+        logger.info(','.join(map(str, msg)))
         return maxEarn
 
     # a method that returns maximum possible earnings

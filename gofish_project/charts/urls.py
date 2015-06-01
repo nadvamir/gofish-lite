@@ -16,9 +16,6 @@ urlpatterns = patterns('',
         # visualiser of endgame data
         url(r'^data_endgame/$', views.dataEndgame),
 
-        # calculates reward for fish and cost of levels
-        url(r'^optimise/$', views.optimise),
-
         # api call to get specific data
         url(r'^api/get_data/$', views.getData),
         # api call for bar chart data

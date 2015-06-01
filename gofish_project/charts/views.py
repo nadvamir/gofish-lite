@@ -69,10 +69,9 @@ def dataAggregated(request):
                 'loptMoneyAbs' : 'Absolute Loc. Opt. of Money'
             },
             'boxX': {
-                'cueDetail'    : 'Detail of Cues',
+                'weather'      : 'Weather Conditions',
                 'level'        : 'Level of Game',
                 'gameNum'      : 'Game Number',
-                'fishCost'     : 'Fishing Cost',
                 'moveCost'     : 'Moving Cost',
                 'endGame'      : 'End Game',
                 'level'        : 'Level of Game',
@@ -124,8 +123,7 @@ def dataEndgame(request):
             'groups': {
                 'level'     : 'Level of Game',
                 'moveCost ' : 'Moving Cost',
-                'cueDetail' : 'Detail of Cues',
-                'line'      : 'Level of Lines',
+                'weather'   : 'Weather Conditions',
             },
             'choices': {
                 'earned'    : 'Money Earned',
@@ -138,41 +136,15 @@ def dataEndgame(request):
     return render_to_response('charts/data_endgame.html', context_dict, context)
 
 #################################################################
-# Optimisation of the Game
-#################################################################
-@user_passes_test(lambda u: u.is_superuser)
-def optimise(request):
-    context = RequestContext(request)
-
-    # 1. Monte Carlo simulation
-    yc = YieldSimulation(100)
-    # 2. Build a cp model from resulting yields
-    yields = yc.getYields()
-    model = YieldModel(yields)
-    # 3. Solve the model
-    context_dict = model.optimise()
-    # 4. Get descriptives for our simulation, if successful
-    if context_dict['solution']:
-        context_dict['stats'] = \
-                yc.describeYields(context_dict['solution'])
-        # 5. plot the earnings
-        yc.exportEarnings(context_dict['solution'])
-        # 6. export fish value distributions
-        YieldSimulation.exportDistributions(yields, context_dict['solution'])
-
-
-    return render_to_response('charts/optimise.html', context_dict, context)
-
-#################################################################
 # Data API
 #################################################################
 # data for single user query
 @user_passes_test(lambda u: u.is_superuser)
 def getData(request):
     qs = DataPoint.query(
-        username  = request.GET.get('username', None),
+        userId    = request.GET.get('userId', None),
         gameNum   = request.GET.get('gameNum', None),
-        cueDetail = request.GET.get('cueDetail', None),
+        weather   = request.GET.get('weather', None),
         level     = request.GET.get('level', None),
         moveCost  = request.GET.get('moveCost', None),
         endGame   = request.GET.get('endGame', None))

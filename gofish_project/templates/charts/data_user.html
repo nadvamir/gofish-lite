@@ -32,9 +32,9 @@ function getSelected(selector) {
 }
 
 function getFilters() {
-    var filters = {username: getSelected('#username')};
+    var filters = {userId: getSelected('#userId')};
     getSelected('#gameNum')   != '--' && !!(filters.gameNum   = getSelected('#gameNum'));
-    getSelected('#cueDetail') != '--' && !!(filters.cueDetail = getSelected('#cueDetail'));
+    getSelected('#weather') != '--' && !!(filters.weather = getSelected('#weather'));
     getSelected('#level')     != '--' && !!(filters.level     = getSelected('#level'));
     getSelected('#moveCost')  != '--' && !!(filters.moveCost  = getSelected('#moveCost'));
     return filters;
@@ -96,10 +96,10 @@ function drawLocallyOptimalMoneyChart() {
     <section>
         <h2>Filters:</h2>
         <p>
-            <label for="username">Username: </label>
-            <select id="username">
-                {% for i in choices.usernames %}
-                    <option value="{{i.username}}">{{i.username}}</option>
+            <label for="userId">userId: </label>
+            <select id="userId">
+                {% for i in choices.userIds %}
+                    <option value="{{i.userId}}">{{i.userId}}</option>
                 {% endfor %}
             </select>
         </p>
@@ -113,11 +113,11 @@ function drawLocallyOptimalMoneyChart() {
             </select>
         </p>
         <p>
-            <label for="cueDetail">Cue Detail: </label>
-            <select id="cueDetail">
+            <label for="weather">Weather: </label>
+            <select id="weather">
                 <option value="--">--</option>
-                {% for i in choices.cueDetails %}
-                    <option value="{{i.cueDetail}}">{{i.cueDetail}}</option>
+                {% for i in choices.weathers %}
+                    <option value="{{i.weather}}">{{i.cueDetail}}</option>
                 {% endfor %}
             </select>
         </p>

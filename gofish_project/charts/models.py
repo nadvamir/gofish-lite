@@ -6,22 +6,20 @@ import re
 
 # a data point for charting
 class DataPoint(models.Model):
-    # players username
-    username  = models.TextField()
+    # players user id
+    userId    = models.IntegerField()
     # game number for this player
     gameNum   = models.IntegerField()
     # the maximum level player has unlocked
     playerLvl = models.IntegerField()
-    # detauls for the cues
-    cueDetail = models.IntegerField()
     # game level index
     level     = models.IntegerField()
     # move cost for the player
     moveCost  = models.IntegerField()
-    # fishing cost for the player
-    fishCost  = models.IntegerField()
     # is this an endgame location
     endGame   = models.IntegerField()
+    # weather conditions
+    weather   = models.IntegerField()
     # how much time did the player spend
     timeSpent = models.IntegerField()
     # how much time was it optimal to spend
@@ -52,25 +50,24 @@ class DataPoint(models.Model):
     @staticmethod
     def insertFromLine(line):
         # our data is space separated
-        line = line.split(' ')
+        line = line.split(',')
 
         # create a data point
         point = DataPoint(
-            username  = line[0],
+            userId    = int(line[0]),
             gameNum   = int(line[1]),
             playerLvl = int(line[2]),
-            cueDetail = int(line[3]),
-            level     = int(line[4]),
-            moveCost  = int(line[5]),
-            fishCost  = int(line[6]),
-            endGame   = int(line[7]),
-            timeSpent = int(line[8]),
-            optTime   = int(line[9]),
-            locOptT   = int(line[10]),
-            earnedM   = int(line[11]),
-            optimalM  = int(line[12]),
-            locOptM   = int(line[13]),
-            createdAt = int(line[14]))
+            level     = int(line[3]),
+            moveCost  = int(line[4]),
+            endGame   = int(line[5]),
+            weather   = int(line[6]),
+            timeSpent = int(line[7]),
+            optTime   = int(line[8]),
+            locOptT   = int(line[9]),
+            earnedM   = int(line[10]),
+            optimalM  = int(line[11]),
+            locOptM   = int(line[12]),
+            createdAt = int(line[13]))
 
         # store it
         point.save()
@@ -80,15 +77,15 @@ class DataPoint(models.Model):
     #############################################################
     # return all data points for a query
     @staticmethod
-    def query(username=None, gameNum=None,
-              playerLvl=None, cueDetail=None,
-              level=None, moveCost=None, endGame=None):
+    def query(userId=None, gameNum=None, weather=None,
+              playerLvl=None, level=None,
+              moveCost=None, endGame=None):
         qs = DataPoint.objects.all()
 
-        if None != username:  qs = qs.filter(username=username)
+        if None != userId:    qs = qs.filter(userId=userId)
         if None != gameNum:   qs = qs.filter(gameNum=gameNum)
+        if None != weather:   qs = qs.filter(weather=weather)
         if None != playerLvl: qs = qs.filter(playerLvl=playerLvl)
-        if None != cueDetail: qs = qs.filter(cueDetail=cueDetail)
         if None != level:     qs = qs.filter(level=level)
         if None != moveCost:  qs = qs.filter(moveCost=moveCost)
         if None != endGame:   qs = qs.filter(endGame=endGame)
@@ -144,10 +141,10 @@ class DataPoint(models.Model):
     def describeData():
         qs = DataPoint.objects.all();
         return {
-            'usernames'  : qs.values('username').distinct(),
+            'userIds'    : qs.values('userId').distinct(),
             'gameNums'   : qs.values('gameNum').distinct(),
+            'weathers'   : qs.values('weather').distinct(),
             'playerLvls' : qs.values('playerLvl').distinct(),
-            'cueDetails' : qs.values('cueDetail').distinct(),
             'levels'     : qs.values('level').distinct(),
             'moveCosts'  : qs.values('moveCost').distinct()
         }
@@ -162,22 +159,16 @@ class DataPoint(models.Model):
 
 # a data point for endgame statistics
 class EndGame(models.Model):
-    # players username
-    username  = models.TextField()
+    # players user id
+    userId    = models.IntegerField()
     # game number for this player
     gameNum   = models.IntegerField()
     # game level index
     level     = models.IntegerField()
-    # details for the cues
-    cueDetail = models.IntegerField()
-    # line update 
-    line      = models.IntegerField()
+    # weather info
+    weather   = models.IntegerField()
     # move cost for the player
     moveCost  = models.IntegerField()
-    # fishing cost for the player
-    fishCost  = models.IntegerField()
-    # how many stars have been earned
-    stars     = models.IntegerField()
     # how much money did the player earned
     earnedM   = models.IntegerField()
     # how much money was it possible to earn
@@ -197,22 +188,19 @@ class EndGame(models.Model):
     @staticmethod
     def insertFromLine(line):
         # our data is space separated
-        line = line.split(' ')
+        line = line.split(',')
 
         # create a data point
         point = EndGame(
-            username  = line[0],
+            userId    = int(line[0]),
             gameNum   = int(line[1]),
             level     = int(line[2]),
-            cueDetail = int(line[3]),
-            line      = int(line[4]),
-            moveCost  = int(line[5]),
-            fishCost  = int(line[6]),
-            stars     = int(line[7]),
-            earnedM   = int(line[8]),
-            maxM      = int(line[9]),
-            optimalM  = int(line[10]),
-            locOptM   = int(line[11]))
+            weather   = int(line[3]),
+            moveCost  = int(line[4]),
+            earnedM   = int(line[5]),
+            maxM      = int(line[6]),
+            optimalM  = int(line[7]),
+            locOptM   = int(line[8]))
 
         # store it
         point.save()
