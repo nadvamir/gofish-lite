@@ -159,7 +159,7 @@ class Game(models.Model):
         optimalM    = int(self.getMoneyEarnedIn(pos, optimalTime))
         localOptM   = int(self.getMoneyEarnedIn(pos, localOptT))
         endGame     = '1' if endGame else '0'
-        moveCost    = inc(lvl.moveC(self.level['index']))
+        moveCost    = int(lvl.moveC(self.level['index']))
         createdAt   = int(time.time())
 
         msg = [
