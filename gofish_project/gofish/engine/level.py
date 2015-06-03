@@ -50,7 +50,7 @@ def valueF(index, weather):
 
 # top value for a fish
 def topValue(index):
-    return INIT_VAL + BASE_VAL ^ index
+    return INIT_VAL + BASE_VAL ** index
 
 # generate all yields
 def getYields(index, weather):
