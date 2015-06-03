@@ -3,7 +3,17 @@ MAP_SIZE     = 20
 # how much time there is
 TOTAL_TIME   = 50
 # threshold for moving into secondary fish
-LESSER_FISH  = 0.8
+LESSER_FISH  = 0.7
+# chance to catch a fish
+CHANCE_FISH  = 0.5
+# chance to fail to catch a fish
+CHANCE_FAIL  = 0.7
+# chance to catch a fake fish
+CHANCE_FAKE  = 0.5
+# fake fish id
+FAKE_FISH    = 'shoe'
+# no fish
+NO_FISH      = 'none'
 # SD for fish value
 FISH_SD      = 0.05
 # initial value of a fish
@@ -17,29 +27,29 @@ IMPLIED_PERF = 1.0
 # but in reality they seem to just correlate strongly
 BOATS        = [{
     'name': 'Raft',
-    'mult': 4.0
+    'mult': 8.0
 }, {
     'name': 'Rowing boat',
-    'mult': 2.0
+    'mult': 4.0
 }, {
     'name': 'Motor boat',
-    'mult': 1.0
+    'mult': 2.0
 }]
 WEATHER      = [{
     'name': 'Sunny',
-    'mult': 6.0
+    'mult': 5.0
 }, {
     'name': 'Cloudy',
-    'mult': 4.0
+    'mult': 3.5
 }, {
     'name': 'Rainy',
-    'mult': 2.0
+    'mult': 2.5
 }]
 LEVELS       = [{
     'name': 'Local Pond',
     'toPlay': 2,
     'boat': 0,
-    'fish': ['bass', 'shoe'] # there must always be exactly 2 fish
+    'fish': ['bream', 'bass'] # there must always be exactly 2 fish
 }, {
     'name': 'Lake',
     'toPlay': 5,
@@ -58,6 +68,10 @@ LEVELS       = [{
 }]
 
 FISH         = {
+    'none': {
+        'name': 'Nothing',
+        'weight': 0.0,
+    },
     'bass': {
         'name': 'Bass',
         'weight': 0.2,

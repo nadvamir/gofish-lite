@@ -10,6 +10,7 @@
 
 .right { float: right }
 .left { float: left }
+.warning { color: #aa2300; }
 
 /* ----------------------------------------------------------- */
 body {
@@ -172,6 +173,10 @@ nav a:hover {
     display: none;
 }
 
+.Sunny { background: #ffffdb; }
+.Cloudy { background: #ffffff; }
+.Rainy { background: #d6ebff; }
+
 div.fish-img {
     display: inline-block;
     background-repeat: no-repeat;
@@ -219,10 +224,6 @@ div.fish-img.Tuna {
     height: 440px;
     background: url('/static/images/green_gobbler.png');
     line-height: 9px; /* otherwise we get spaces... */
-}
-
-#game-map p:first-child {
-    background: white;
 }
 
 #game-map span {

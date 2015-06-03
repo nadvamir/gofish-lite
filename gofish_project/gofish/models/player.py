@@ -10,6 +10,10 @@ class Player(models.Model):
 
     # how much currency this player has
     money     = models.IntegerField(default=10)
+    # total amount of money ever had
+    allMoney  = models.IntegerField(default=10)
+    # maximum possible amount of money to earn to date
+    maxMoney  = models.IntegerField(default=10)
     # how many games has he played in total
     numGames  = models.IntegerField(default=0)
     # what is the highest level unlocked by a player

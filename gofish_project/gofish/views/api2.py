@@ -16,7 +16,10 @@ import gofish.engine.level as lvl
 @allow_lazy_user
 def v2home(request):
     player   = models.Player.initialise(request.user)
-    response = {'levels': []}
+    response = {
+        'levels': [],
+        'perf': round(100.0 * player.allMoney / player.maxMoney, 2)
+    }
 
     for i in range(len(gamedef.LEVELS)):
         # star scores for player
@@ -60,7 +63,8 @@ def v2game(request):
     if None == game:
         return HttpResponseNotFound()
 
-    caught = reduce(lambda a, f: a + f['value'], game.caught, 0)
+    val = lambda f: f['value'] if f['caught'] else 0
+    caught = reduce(lambda a, f: a + val(f), game.caught, 0)
     response = {'game' : {
         'level'     : game.level['index'],
         'day'       : player.numGames,

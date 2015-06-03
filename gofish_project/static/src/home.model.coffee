@@ -26,6 +26,7 @@ home.vm = do ->
             @levels = new home.Levels()
             for level in r.levels
                 @levels.push new home.Level(level)
+            @perf = m.prop r.perf
 
     chooseLevel: ->
         get('/start/' + @id()).then (r) ->

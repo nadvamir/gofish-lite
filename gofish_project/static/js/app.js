@@ -105,15 +105,14 @@ home.vm = (function() {
     init: function() {
       return get('/v2/home').then((function(_this) {
         return function(r) {
-          var level, _i, _len, _ref, _results;
+          var level, _i, _len, _ref;
           _this.levels = new home.Levels();
           _ref = r.levels;
-          _results = [];
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             level = _ref[_i];
-            _results.push(_this.levels.push(new home.Level(level)));
+            _this.levels.push(new home.Level(level));
           }
-          return _results;
+          return _this.perf = m.prop(r.perf);
         };
       })(this));
     },
@@ -182,6 +181,7 @@ game.Fish = (function() {
     this.name = m.prop(f.name);
     this.value = m.prop(f.value);
     this.weight = m.prop(f.weight);
+    this.caught = m.prop(f.caught);
   }
 
   return Fish;
@@ -215,7 +215,9 @@ game.Game = (function() {
     _ref = g.caught;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       f = _ref[_i];
-      this.caught().push(new game.Fish(f));
+      if (f.caught) {
+        this.caught().push(new game.Fish(f));
+      }
     }
   }
 
@@ -263,7 +265,7 @@ game.vm = (function() {
         return game.vm.info('');
       };
       fish = function(r) {
-        var divisor, f, g, importance;
+        var f, g, importance;
         if (0 === r.fishList.length) {
           return m.route('/end');
         }
@@ -271,12 +273,15 @@ game.vm = (function() {
         fish = r.fishList[0];
         if (null !== fish) {
           g = game.vm.game;
-          g.valCaught(g.valCaught() + fish.value);
           f = new game.Fish(fish);
-          divisor = importance = 3 + Math.ceil(10 * f.value() / g.topValue());
-          importance = importance > 140 && 140 || importance;
-          game.vm.addInfo(['You\'ve caught a ', caught.vm.getItemView.apply(f)], importance);
-          return g.caught().push(f);
+          importance = 3 + Math.ceil(10 * f.value() / g.topValue());
+          if (f.caught()) {
+            g.valCaught(g.valCaught() + fish.value);
+            game.vm.addInfo(['You\'ve caught a ', caught.vm.getItemView.apply(f)], importance);
+            return g.caught().push(f);
+          } else {
+            return game.vm.addInfo([m('span.warning', [caught.vm.getItemView.apply(f), ' managed to ', m('strong', 'escape!')])], importance);
+          }
         } else {
           return game.vm.addInfo('Nothing was caught', 2);
         }
@@ -507,7 +512,7 @@ loading.view = function(ctrl) {
 };
 
 home.view = function() {
-  return [topBar('Choose a location:', game.vm.player.money()), m('h2', ['Location', m('.right', 'High Score')]), list.view(home.vm.levels, home.vm.getItemView)];
+  return [topBar('Choose a location:', game.vm.player.money()), m('h2', ['Performance', m('.right', home.vm.perf() + '%')]), m('h2', ['Location', m('.right', 'High Score')]), list.view(home.vm.levels, home.vm.getItemView)];
 };
 
 game.view = function(ctrl) {
@@ -559,7 +564,9 @@ gameActions.view = function() {
 };
 
 infoArea.view = function() {
-  return m('div#info-area', [
+  return m('div#info-area', {
+    "class": game.vm.game.weatherN()
+  }, [
     game.vm.info(), m('div.right.fa', {
       "class": infoArea.weather[game.vm.game.weather()],
       title: game.vm.game.weatherN()
@@ -568,7 +575,9 @@ infoArea.view = function() {
 };
 
 gameMap.boatSW = function() {
-  return m('p', [
+  return m('p', {
+    "class": game.vm.game.weatherN()
+  }, [
     m('span.boat-' + game.vm.game.boat(), {
       style: {
         marginLeft: gameMap.TILE_W * game.vm.game.position() + 'px'

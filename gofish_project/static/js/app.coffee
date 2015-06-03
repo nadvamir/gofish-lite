@@ -101,6 +101,7 @@ home.vm = do ->
             @levels = new home.Levels()
             for level in r.levels
                 @levels.push new home.Level(level)
+            @perf = m.prop r.perf
 
     chooseLevel: ->
         get('/start/' + @id()).then (r) ->
@@ -160,6 +161,7 @@ class game.Fish
         @name   = m.prop f.name
         @value  = m.prop f.value
         @weight = m.prop f.weight
+        @caught = m.prop f.caught
 
 # a player model
 class game.Player
@@ -182,7 +184,7 @@ class game.Game
         @boat      = m.prop g.boat
         @caught    = m.prop []
         for f in g.caught
-            @caught().push new game.Fish(f)
+            @caught().push new game.Fish(f) if f.caught
 
 game.vm = do ->
     init: ->
@@ -225,16 +227,24 @@ game.vm = do ->
             fish = r.fishList[0]
             if null != fish
                 g = game.vm.game
-                g.valCaught(g.valCaught() + fish.value)
                 f = new game.Fish(fish)
-                divisor =
                 importance = 3 + Math.ceil(10 * f.value() / g.topValue())
-                importance = importance > 140 and 140 or importance
-                game.vm.addInfo([
-                    'You\'ve caught a ',
-                    caught.vm.getItemView.apply(f)
-                ], importance)
-                g.caught().push f
+
+                if f.caught()
+                    g.valCaught(g.valCaught() + fish.value)
+                    game.vm.addInfo([
+                        'You\'ve caught a ',
+                        caught.vm.getItemView.apply(f)
+                    ], importance)
+                    g.caught().push f
+                else
+                    game.vm.addInfo([
+                        m('span.warning', [
+                            caught.vm.getItemView.apply(f)
+                            ' managed to '
+                            m('strong', 'escape!')
+                        ])
+                    ], importance)
             else
                 game.vm.addInfo 'Nothing was caught', 2
 
@@ -446,6 +456,10 @@ loading.view = (ctrl) ->
 home.view = -> [
     topBar('Choose a location:', game.vm.player.money())
     m('h2', [
+        'Performance'
+        m('.right', home.vm.perf() + '%')
+    ])
+    m('h2', [
         'Location'
         m('.right', 'High Score')
     ])
@@ -505,17 +519,18 @@ gameActions.view = -> [
 
 
 # view
-infoArea.view = -> m('div#info-area', [
-    game.vm.info()
-    m('div.right.fa', {
-        class: infoArea.weather[game.vm.game.weather()]
-        title: game.vm.game.weatherN()
-    })
+infoArea.view = -> m('div#info-area',
+    {class: game.vm.game.weatherN()}, [
+        game.vm.info()
+        m('div.right.fa', {
+            class: infoArea.weather[game.vm.game.weather()]
+            title: game.vm.game.weatherN()
+        })
 ])
 
 
 # a sub view for displaying boat
-gameMap.boatSW = -> m('p', [
+gameMap.boatSW = -> m('p', {class: game.vm.game.weatherN()}, [
     m('span.boat-' + game.vm.game.boat(), {style:
         {marginLeft: gameMap.TILE_W * game.vm.game.position() + 'px'}})
 ])

@@ -1,5 +1,5 @@
 # a sub view for displaying boat
-gameMap.boatSW = -> m('p', [
+gameMap.boatSW = -> m('p', {class: game.vm.game.weatherN()}, [
     m('span.boat-' + game.vm.game.boat(), {style:
         {marginLeft: gameMap.TILE_W * game.vm.game.position() + 'px'}})
 ])

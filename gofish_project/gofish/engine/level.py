@@ -1,6 +1,7 @@
 from gamedef import *
 from random import gauss
 from random import randint
+from random import random
 from math import exp
 
 # cost of unlocking given level
@@ -36,7 +37,7 @@ def optEarnings(index, weather):
     vf = valueF(index, weather)
     w = WEATHER[weather]['mult']
     b = moveC(index)
-    optT = w * b - b
+    optT = w * b / 2 - b
     optE = sum([vf(i) for i in range(1, int(optT)+1)])
     return int(optE * TOTAL_TIME / (optT + b)) # a very rough estimate
 
@@ -45,7 +46,7 @@ def valueF(index, weather):
     w = WEATHER[weather]['mult']
     b = moveC(index)
     v = topValue(index)
-    return lambda x: v * exp(-x / b / (w-1))
+    return lambda x: v * exp(-2 * x / b / (w-2))
 
 # top value for a fish
 def topValue(index):
@@ -67,14 +68,39 @@ def getFish(index, vf, i):
 
     fishInd = 1 if val/refVal < LESSER_FISH else 0
     fish = LEVELS[index]['fish'][fishInd]
+    
+    # value needs to be normalised against the chance to catch
+    # a fish, so that the expected value function is as predicted
+    val /= CHANCE_FISH
 
+    if random() < CHANCE_FISH:
+        return catch(fishObj(fish, val))
+    elif random() < CHANCE_FAIL:
+        return noCatch(fishObj(fish, val))
+    elif random() < CHANCE_FAKE:
+        return catch(fishObj(FAKE_FISH, 0.0))
+    else:
+        return catch(fishObj(NO_FISH, 0.0))
+
+# fish object
+def fishObj(fish, val):
     actualVal = round(normVal(val, FISH_SD), 0)
     return {
         'id': fish,
         'name': FISH[fish]['name'],
-        'weight': round(FISH[fish]['weight'] * actualVal / val, 2),
+        'weight': round(FISH[fish]['weight'] * actualVal / (val+0.01), 2),
         'value': int(actualVal)
     }
+
+# catch a fish
+def catch(fish):
+    fish['caught'] = True
+    return fish
+
+# fail to catch a fish
+def noCatch(fish):
+    fish['caught'] = False
+    return fish
 
 # return a gaussian with sd expressed in percentage
 def normVal(mean, sdp):

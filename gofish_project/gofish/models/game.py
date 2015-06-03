@@ -86,11 +86,12 @@ class Game(models.Model):
         # calculate, how much was earned
         earned = 0
         for fish in self.caught:
-            earned += fish['value']
-            # also, store it if it is a trophy
-            self.player.storeAchievement(fish['id'],
-                                         fish['weight'],
-                                         fish['value'])
+            if fish['caught']:
+                earned += fish['value']
+                # also, store it if it is a trophy
+                self.player.storeAchievement(fish['id'],
+                                             fish['weight'],
+                                             fish['value'])
 
         # log endgame performance
         # overall statistics
@@ -110,6 +111,8 @@ class Game(models.Model):
 
         # store the money 
         self.player.money += earned
+        self.player.allMoney += earned
+        self.player.maxMoney += maximum
         self.player.savePlayer()
 
         self.delete()
@@ -179,7 +182,8 @@ class Game(models.Model):
         travelCost = boatMCost if pos > 0 else 0
 
         for fish in self.level['yields'][pos]:
-            val += fish['value']
+            if fish['caught']:
+                val += fish['value']
             vRatio = val / (time + travelCost)
             if vRatio > maxVal:
                 maxVal = vRatio
@@ -193,7 +197,7 @@ class Game(models.Model):
 
     # returns how much money was earned in loc till given time
     def getMoneyEarnedIn(self, pos, timeSpent):
-        return sum([fish['value'] for fish in self.level['yields'][pos][0:timeSpent]])
+        return sum([fish['value'] for fish in self.level['yields'][pos][0:timeSpent] if fish['caught']])
 
     #############################################################
     # endgame logging with helpers
@@ -242,7 +246,7 @@ class Game(models.Model):
             nfish = len(y[pos]) - pos * moveC
             nfish = 0 if nfish < 0 else nfish
             for i in range(nfish):
-                val = y[pos][i]['value']
+                val = y[pos][i]['value'] if y[pos][i]['caught'] else 0
                 values[pos][i+1] = values[pos][i] + val
 
         # perform a O(n*t*k^2) algorithm :(
@@ -311,7 +315,8 @@ class Game(models.Model):
             if time + fCost > totalTime or timeInSpot == len(spotYield):
                 break
 
-            if '1' == succeeded:
+            if '1' == succeeded and \
+                    spotYield[timeInSpot]['id'] != gamedef.NO_FISH:
                 caught.append(spotYield[timeInSpot])
                 response.append(spotYield[timeInSpot])
             else:
