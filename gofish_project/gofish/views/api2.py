@@ -88,9 +88,9 @@ def v2trophies(request):
     player = models.Player.initialise(request.user)
     response = {'userTrophies': [], 'gameTrophies': []}
 
-    for _, fish in gamedef.GAME['fish'].iteritems():
+    for key, fish in gamedef.FISH.iteritems():
         # add user trophies
-        trophy = player.getAchievement(fish['id'])
+        trophy = player.getAchievement(key)
         trophy = trophy.toDict() if None != trophy else {'value': 0.0, 'rating': 0}
         response['userTrophies'].append({
             'name'   : fish['name'],
@@ -99,7 +99,7 @@ def v2trophies(request):
         })
 
         # add best overall trophies
-        trophy = models.Achievement.getTop(fish['id'])
+        trophy = models.Achievement.getTop(key)
         trophy = trophy[0].toDict() if 0 != len(trophy) else {'value': 0.0, 'rating': 0}
         response['gameTrophies'].append({
             'name'   : fish['name'],
