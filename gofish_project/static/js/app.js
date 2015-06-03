@@ -361,11 +361,11 @@ gameActions = {};
 gameActions.actions = function() {
   return [
     {
-      action: 'left',
-      title: game.vm.game.position() > 0 && 'move left' || ' return home'
+      action: 'fish',
+      title: 'fish fast'
     }, {
       action: 'fish',
-      title: 'fish here'
+      title: 'fish slow'
     }, {
       action: 'right',
       title: 'move right'
