@@ -17,17 +17,18 @@ def cost(index):
 # a level object
 def get(index):
     weather = randint(0, len(WEATHER)-1)
+    gameMap = maps.generate(LEVELS[index]['maxdepth'], MAP_SIZE)
     return {
         'index': index,
         'name': LEVELS[index]['name'],
         'boat': LEVELS[index]['boat'],
         'weather': weather,
-        'map': maps.generate(LEVELS[index]['maxdepth'], MAP_SIZE),
+        'map': gameMap,
         'position': 0,
         'time': 0,
         'totalTime': TOTAL_TIME,
         'timeInLoc': [0 for i in range(0, MAP_SIZE)],
-        'yields': getYields(index, weather)
+        'yields': getYields(index, weather, gameMap[0])
     }
 
 # move cost in this level
@@ -54,28 +55,29 @@ def valueF(index, weather):
 def topValue(index):
     return INIT_VAL + BASE_VAL ** index
 
-# generate all yields
-def getYields(index, weather):
-    return [genYield(index, weather) for i in range(0, MAP_SIZE)]
+# generate all yields, map is a 1d array of depths
+def getYields(index, weather, gameMap):
+    return [genYield(index, weather, d) for d in gameMap]
 
 # generate a yield
-def genYield(index, weather):
+def genYield(index, weather, depth):
     vf = valueF(index, weather)
-    return [getFish(index, vf, i) for i in range(1, TOTAL_TIME+1)]
+    return [getFish(index, vf, i, depth) for i in range(1, TOTAL_TIME+1)]
 
 # get a particular fish
-def getFish(index, vf, i):
-    refVal = vf(1)
+def getFish(index, vf, i, depth):
+    refVal = vf(1) / CHANCE_FISH
     val = vf(i)
+
+    # value needs to be normalised against the chance to catch
+    # a fish, so that the expected value function is as predicted
+    chance = CHANCE_FISH - CHANCE_DIM * depth
+    val /= chance
 
     fishInd = 1 if val/refVal < LESSER_FISH else 0
     fish = LEVELS[index]['fish'][fishInd]
-    
-    # value needs to be normalised against the chance to catch
-    # a fish, so that the expected value function is as predicted
-    val /= CHANCE_FISH
 
-    if random() < CHANCE_FISH:
+    if random() < chance:
         return catch(fishObj(fish, val))
     elif random() < CHANCE_FAIL:
         return noCatch(fishObj(fish, val))
