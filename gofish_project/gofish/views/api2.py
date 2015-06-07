@@ -74,6 +74,7 @@ def v2game(request):
         'valCaught' : caught,
         'topValue'  : lvl.topValue(game.level['index']),
         'position'  : game.level['position'],
+        'map'       : game.level['map'],
         'caught'    : game.caught,
         'weather'   : game.level['weather'],
         'weatherN'  : gamedef.WEATHER[game.level['weather']]['name'],

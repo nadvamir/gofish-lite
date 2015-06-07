@@ -211,6 +211,7 @@ game.Game = (function() {
     this.weather = m.prop(g.weather);
     this.weatherN = m.prop(g.weatherN);
     this.boat = m.prop(g.boat);
+    this.map = m.prop(g.map);
     this.caught = m.prop([]);
     _ref = g.caught;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -299,7 +300,11 @@ game.vm = (function() {
       return this.game !== null;
     },
     getWaterClass: function(i, j) {
-      return 'dark-water';
+      if (i < this.game.map()[0][j]) {
+        return 'dark-water';
+      } else {
+        return 'ground';
+      }
     },
     addInfo: function(text, importance) {
       var end, maxImp, timeOutF, value;

@@ -32,6 +32,7 @@ class game.Game
         @weather   = m.prop g.weather
         @weatherN  = m.prop g.weatherN
         @boat      = m.prop g.boat
+        @map       = m.prop g.map
         @caught    = m.prop []
         for f in g.caught
             @caught().push new game.Fish(f) if f.caught
@@ -105,7 +106,11 @@ game.vm = do ->
     inGame: ->
         @game != null
 
-    getWaterClass: (i, j) -> 'dark-water'
+    getWaterClass: (i, j) ->
+        if i < @game.map()[0][j]
+            'dark-water'
+        else
+            'ground'
 
     # add info text and animate, depending on importance
     addInfo: (text, importance) ->

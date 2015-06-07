@@ -49,21 +49,25 @@ LEVELS       = [{
     'name': 'Local Pond',
     'toPlay': 2,
     'boat': 0,
+    'maxdepth': 3,
     'fish': ['bream', 'bass'] # there must always be exactly 2 fish
 }, {
     'name': 'Lake',
     'toPlay': 5,
     'boat': 0,
+    'maxdepth': 5,
     'fish': ['pike', 'bream']
 }, {
     'name': 'River',
     'toPlay': 5,
     'boat': 1,
+    'maxdepth': 7,
     'fish': ['catfish', 'salmon']
 }, {
     'name': 'Sea',
     'toPlay': 5,
     'boat': 2,
+    'maxdepth': 9,
     'fish': ['tuna', 'cod']
 }]
 

@@ -3,6 +3,7 @@ from random import gauss
 from random import randint
 from random import random
 from math import exp
+import maps
 
 # cost of unlocking given level
 def cost(index):
@@ -21,6 +22,7 @@ def get(index):
         'name': LEVELS[index]['name'],
         'boat': LEVELS[index]['boat'],
         'weather': weather,
+        'map': maps.generate(LEVELS[index]['maxdepth'], MAP_SIZE),
         'position': 0,
         'time': 0,
         'totalTime': TOTAL_TIME,
