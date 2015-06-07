@@ -5,7 +5,7 @@ TOTAL_TIME   = 50
 # threshold for moving into secondary fish
 LESSER_FISH  = 0.7
 # chance to catch a fish
-CHANCE_FISH  = 0.7
+CHANCE_FISH  = 0.71
 # how much chance diminishes per unit of depth
 CHANCE_DIM   = 0.07
 # chance to fail to catch a fish

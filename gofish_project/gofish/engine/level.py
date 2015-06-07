@@ -89,10 +89,12 @@ def getFish(index, vf, i, depth):
 # fish object
 def fishObj(fish, val):
     actualVal = round(normVal(val, FISH_SD), 0)
+    weight = FISH[fish]['weight']
+    weight *= actualVal / val if actualVal != 0 else 1
     return {
         'id': fish,
         'name': FISH[fish]['name'],
-        'weight': round(FISH[fish]['weight'] * actualVal / (val+0.01), 2),
+        'weight': round(weight, 2),
         'value': int(actualVal)
     }
 
