@@ -49,7 +49,7 @@ WEATHER      = [{
 }]
 LEVELS       = [{
     'name': 'Local Pond',
-    'toPlay': 2,
+    'toPlay': 1,
     'boat': 0,
     'maxdepth': 3,
     'fish': ['bream', 'bass'] # there must always be exactly 2 fish
