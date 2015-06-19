@@ -242,11 +242,7 @@ game.vm = do ->
                     game.vm.addInfo([
                         m('span#escape', {
                             onclick: m.trigger('opacity', 0)
-                        }, [
-                            caught.vm.getItemView.apply(f)
-                            ' managed to '
-                            m('strong', 'escape!')
-                        ])
+                        }, game.vm.getEscapeMsg(f))
                     ], importance, true)
             else
                 game.vm.addInfo 'Nothing was caught', 2
@@ -263,6 +259,22 @@ game.vm = do ->
             'dark-water'
         else
             'ground'
+
+    getEscapeMsg: (f) ->
+        msgs = [[
+            caught.vm.getItemView.apply(f)
+            m('strong', ' managed to escape!')
+        ], [
+            caught.vm.getItemView.apply(f)
+            m('strong', ' tore the line!')
+        ], [
+            caught.vm.getItemView.apply(f)
+            m('strong', ' got away!')
+        ], [
+            m('strong', 'You\'ve dropped ')
+            caught.vm.getItemView.apply(f)
+        ]]
+        msgs[Math.floor(Math.random() * msgs.length)]
 
     # add info text and animate, depending on importance
     addInfo: (text, importance, fade = false) ->

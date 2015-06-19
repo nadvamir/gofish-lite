@@ -284,7 +284,7 @@ game.vm = (function() {
             return game.vm.addInfo([
               m('span#escape', {
                 onclick: m.trigger('opacity', 0)
-              }, [caught.vm.getItemView.apply(f), ' managed to ', m('strong', 'escape!')])
+              }, game.vm.getEscapeMsg(f))
             ], importance, true);
           }
         } else {
@@ -309,6 +309,11 @@ game.vm = (function() {
       } else {
         return 'ground';
       }
+    },
+    getEscapeMsg: function(f) {
+      var msgs;
+      msgs = [[caught.vm.getItemView.apply(f), m('strong', ' managed to escape!')], [caught.vm.getItemView.apply(f), m('strong', ' tore the line!')], [caught.vm.getItemView.apply(f), m('strong', ' got away!')], [m('strong', 'You\'ve dropped '), caught.vm.getItemView.apply(f)]];
+      return msgs[Math.floor(Math.random() * msgs.length)];
     },
     addInfo: function(text, importance, fade) {
       var end, maxImp, timeOutF, value;
