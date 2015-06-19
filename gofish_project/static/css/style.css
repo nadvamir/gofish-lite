@@ -142,7 +142,7 @@ nav a:hover {
 }
 #game-actions a {
     display: inline-block;
-    width: 33.3333%;
+    width: 50%;
     background: #3e4cb7;
     color: white;
     font-size: 20px;

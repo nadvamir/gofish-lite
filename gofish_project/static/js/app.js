@@ -367,10 +367,7 @@ gameActions.actions = function() {
   return [
     {
       action: 'fish',
-      title: 'fish fast'
-    }, {
-      action: 'fish',
-      title: 'fish slow'
+      title: 'fish'
     }, {
       action: 'right',
       title: 'move right'
