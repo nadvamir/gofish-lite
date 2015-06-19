@@ -90,12 +90,14 @@ game.vm = do ->
                     g.caught().push f
                 else
                     game.vm.addInfo([
-                        m('span.warning', [
+                        m('span#escape', {
+                            onclick: m.trigger('opacity', 0)
+                        }, [
                             caught.vm.getItemView.apply(f)
                             ' managed to '
                             m('strong', 'escape!')
                         ])
-                    ], importance)
+                    ], importance, true)
             else
                 game.vm.addInfo 'Nothing was caught', 2
 
@@ -113,13 +115,16 @@ game.vm = do ->
             'ground'
 
     # add info text and animate, depending on importance
-    addInfo: (text, importance) ->
+    addInfo: (text, importance, fade = false) ->
         @info '.'
         value = @game.valCaught(); @game.valCaught '?'
         maxImp = importance
 
         end = =>
             @info text
+            setTimeout ->
+                    document.getElementById('escape').click()
+                , 500 if fade
             @game.valCaught value
             true
 

@@ -281,7 +281,11 @@ game.vm = (function() {
             game.vm.addInfo(['You\'ve caught a ', caught.vm.getItemView.apply(f)], importance);
             return g.caught().push(f);
           } else {
-            return game.vm.addInfo([m('span.warning', [caught.vm.getItemView.apply(f), ' managed to ', m('strong', 'escape!')])], importance);
+            return game.vm.addInfo([
+              m('span#escape', {
+                onclick: m.trigger('opacity', 0)
+              }, [caught.vm.getItemView.apply(f), ' managed to ', m('strong', 'escape!')])
+            ], importance, true);
           }
         } else {
           return game.vm.addInfo('Nothing was caught', 2);
@@ -306,8 +310,11 @@ game.vm = (function() {
         return 'ground';
       }
     },
-    addInfo: function(text, importance) {
+    addInfo: function(text, importance, fade) {
       var end, maxImp, timeOutF, value;
+      if (fade == null) {
+        fade = false;
+      }
       this.info('.');
       value = this.game.valCaught();
       this.game.valCaught('?');
@@ -315,6 +322,11 @@ game.vm = (function() {
       end = (function(_this) {
         return function() {
           _this.info(text);
+          if (fade) {
+            setTimeout(function() {
+              return document.getElementById('escape').click();
+            }, 500);
+          }
           _this.game.valCaught(value);
           return true;
         };
