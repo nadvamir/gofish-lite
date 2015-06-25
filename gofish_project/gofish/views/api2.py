@@ -79,6 +79,7 @@ def v2game(request):
         'weather'   : game.level['weather'],
         'weatherN'  : gamedef.WEATHER[game.level['weather']]['name'],
         'boat'      : game.level['boat'],
+        'moveC'     : gamedef.BOATS[game.level['boat']]['mult'],
     }}
 
     return HttpResponse(json.dumps(response), content_type="application/json")

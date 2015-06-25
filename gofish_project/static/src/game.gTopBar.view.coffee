@@ -8,6 +8,10 @@ gTopBar.daySW = -> m('.day-ind', [
 
 # time sub-view
 gTopBar.timeSW = -> [
+    m('#time-left-text', [
+        game.vm.game.timeLeft()
+        ' min'
+    ])
     m('i.fa.fa-clock-o')
     m('span.time-indicator.time-left',
         {style: {width: gTopBar.vm.timeLeftW()+'px'}}, m.trust '&nbsp;')

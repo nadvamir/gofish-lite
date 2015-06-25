@@ -183,6 +183,7 @@ class game.Game
         @weatherN  = m.prop g.weatherN
         @boat      = m.prop g.boat
         @map       = m.prop g.map
+        @moveC     = m.prop g.moveC
         @caught    = m.prop []
         for f in g.caught
             @caught().push new game.Fish(f) if f.caught
@@ -327,10 +328,10 @@ gameActions = {}
 # list of actions available in the game
 gameActions.actions = -> [{
         action : 'fish',
-        title  : 'fish',
+        title  : 'fish (1 min)',
     }, {
         action : 'right',
-        title  : 'move right',
+        title  : "move right (#{game.vm.game.moveC()} min)",
     }
 ]
 
@@ -504,6 +505,10 @@ gTopBar.daySW = -> m('.day-ind', [
 
 # time sub-view
 gTopBar.timeSW = -> [
+    m('#time-left-text', [
+        game.vm.game.timeLeft()
+        ' min'
+    ])
     m('i.fa.fa-clock-o')
     m('span.time-indicator.time-left',
         {style: {width: gTopBar.vm.timeLeftW()+'px'}}, m.trust '&nbsp;')

@@ -212,6 +212,7 @@ game.Game = (function() {
     this.weatherN = m.prop(g.weatherN);
     this.boat = m.prop(g.boat);
     this.map = m.prop(g.map);
+    this.moveC = m.prop(g.moveC);
     this.caught = m.prop([]);
     _ref = g.caught;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -384,10 +385,10 @@ gameActions.actions = function() {
   return [
     {
       action: 'fish',
-      title: 'fish'
+      title: 'fish (1 min)'
     }, {
       action: 'right',
-      title: 'move right'
+      title: "move right (" + (game.vm.game.moveC()) + " min)"
     }
   ];
 };
@@ -544,7 +545,7 @@ gTopBar.daySW = function() {
 
 gTopBar.timeSW = function() {
   return [
-    m('i.fa.fa-clock-o'), m('span.time-indicator.time-left', {
+    m('#time-left-text', [game.vm.game.timeLeft(), ' min']), m('i.fa.fa-clock-o'), m('span.time-indicator.time-left', {
       style: {
         width: gTopBar.vm.timeLeftW() + 'px'
       }

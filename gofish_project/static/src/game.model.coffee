@@ -33,6 +33,7 @@ class game.Game
         @weatherN  = m.prop g.weatherN
         @boat      = m.prop g.boat
         @map       = m.prop g.map
+        @moveC     = m.prop g.moveC
         @caught    = m.prop []
         for f in g.caught
             @caught().push new game.Fish(f) if f.caught

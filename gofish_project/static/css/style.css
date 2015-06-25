@@ -98,6 +98,7 @@ nav a:hover {
     vertical-align: middle;
     padding-left: 5px;
     border-bottom: 1px solid #7f7f7f;
+    position: relative;
 }
 
 .top-bar a {
@@ -116,7 +117,7 @@ nav a:hover {
 .time-indicator {
     vertical-align: middle;
     display: inline-block;
-    height: 10px;
+    height: 16px;
 }
 .time-left {
     background: #3e4cb7;
@@ -125,6 +126,11 @@ nav a:hover {
 }
 .time-full {
     background: #7f7f7f;
+}
+#time-left-text {
+    position: absolute;
+    left: 30px;
+    top: 2px;
 }
 
 .money-ind {
