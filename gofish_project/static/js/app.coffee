@@ -286,7 +286,7 @@ game.vm = do ->
             @info text
             setTimeout ->
                     document.getElementById('escape').click()
-                , 500 if fade
+                , 1000 if fade
             @game.valCaught value
             true
 

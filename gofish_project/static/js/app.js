@@ -331,7 +331,7 @@ game.vm = (function() {
           if (fade) {
             setTimeout(function() {
               return document.getElementById('escape').click();
-            }, 500);
+            }, 1000);
           }
           _this.game.valCaught(value);
           return true;
