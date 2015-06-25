@@ -43,11 +43,10 @@ game.vm = do ->
         get('/v2/player').then (r) =>
             @player = new game.Player(r.player)
 
-        @info = m.prop ''
-
         @game = null
         get('/v2/game').then (r) =>
             @game = new game.Game(r.game)
+            @info = m.prop "Today is #{@game.weatherN()}"
 
     act: (action) ->
         # don't act during animation

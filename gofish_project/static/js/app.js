@@ -235,11 +235,11 @@ game.vm = (function() {
           return _this.player = new game.Player(r.player);
         };
       })(this));
-      this.info = m.prop('');
       this.game = null;
       return get('/v2/game').then((function(_this) {
         return function(r) {
-          return _this.game = new game.Game(r.game);
+          _this.game = new game.Game(r.game);
+          return _this.info = m.prop("Today is " + (_this.game.weatherN()));
         };
       })(this));
     },
