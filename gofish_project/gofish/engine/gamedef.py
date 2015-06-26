@@ -23,7 +23,7 @@ OPT_TIMES    = [
     [4, 8, 12],
     [4, 8, 12],
     [3, 6, 9],
-    [2, 4, 5]
+    [2, 4, 6]
 ]
 # implied performance (optimality) of players
 IMPLIED_PERF = 0.8
