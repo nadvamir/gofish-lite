@@ -3,7 +3,7 @@ MAP_SIZE     = 20
 # how much time there is
 TOTAL_TIME   = 50
 # threshold for moving into secondary fish
-LESSER_FISH  = 0.7
+LESSER_FISH  = 0.4
 # chance to catch a fish
 CHANCE_FISH  = 0.91
 # how much chance diminishes per unit of depth
