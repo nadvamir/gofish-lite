@@ -20,6 +20,8 @@ class DataPoint(models.Model):
     endGame   = models.IntegerField()
     # weather conditions
     weather   = models.IntegerField()
+    # location depth
+    depth     = models.IntegerField()
     # how much time did the player spend
     timeSpent = models.IntegerField()
     # optimal time as designed beforehand
@@ -65,15 +67,16 @@ class DataPoint(models.Model):
             moveCost  = int(line[4]),
             endGame   = int(line[5]),
             weather   = int(line[6]),
-            timeSpent = int(line[7]),
-            predOptT  = int(line[8]),
-            optTime   = int(line[9]),
-            locOptT   = int(line[10]),
-            earnedM   = int(line[11]),
-            predOptM  = int(line[12]),
-            optimalM  = int(line[13]),
-            locOptM   = int(line[14]),
-            createdAt = int(line[15]))
+            depth     = int(line[7]),
+            timeSpent = int(line[8]),
+            predOptT  = int(line[9]),
+            optTime   = int(line[10]),
+            locOptT   = int(line[11]),
+            earnedM   = int(line[12]),
+            predOptM  = int(line[13]),
+            optimalM  = int(line[14]),
+            locOptM   = int(line[15]),
+            createdAt = int(line[16]))
 
         # store it
         point.save()

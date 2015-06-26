@@ -154,6 +154,7 @@ class Game(models.Model):
 
         levelInfo   = self
         weather     = self.level['weather']
+        depth       = self.level['map'][0][pos]
         pos         = self.level['position']
         timeSpent   = self.level['timeInLoc'][pos]
         predOptT    = gamedef.OPT_TIMES[index][w]
@@ -168,7 +169,7 @@ class Game(models.Model):
         createdAt   = int(time.time())
 
         msg = [
-            levelInfo, moveCost, endGame, weather,
+            levelInfo, moveCost, endGame, weather, depth,
             timeSpent, predOptT, optimalTime, localOptT,
             moneyEarned, predOptM, optimalM, localOptM,
             createdAt
