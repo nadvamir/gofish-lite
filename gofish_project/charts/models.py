@@ -22,12 +22,16 @@ class DataPoint(models.Model):
     weather   = models.IntegerField()
     # how much time did the player spend
     timeSpent = models.IntegerField()
+    # optimal time as designed beforehand
+    predOptT  = models.IntegerField()
     # how much time was it optimal to spend
     optTime   = models.IntegerField()
     # local optimum for the time
     locOptT   = models.IntegerField()
     # how much money did the player earned
     earnedM   = models.IntegerField()
+    # how much money would pre-designed optimum bring
+    predOptM  = models.IntegerField()
     # how much money would optimum bring
     optimalM  = models.IntegerField()
     # how much money would local optimum bring
@@ -62,12 +66,14 @@ class DataPoint(models.Model):
             endGame   = int(line[5]),
             weather   = int(line[6]),
             timeSpent = int(line[7]),
-            optTime   = int(line[8]),
-            locOptT   = int(line[9]),
-            earnedM   = int(line[10]),
-            optimalM  = int(line[11]),
-            locOptM   = int(line[12]),
-            createdAt = int(line[13]))
+            predOptT  = int(line[8]),
+            optTime   = int(line[9]),
+            locOptT   = int(line[10]),
+            earnedM   = int(line[11]),
+            predOptM  = int(line[12]),
+            optimalM  = int(line[13]),
+            locOptM   = int(line[14]),
+            createdAt = int(line[15]))
 
         # store it
         point.save()
@@ -98,7 +104,9 @@ class DataPoint(models.Model):
     @staticmethod
     def queryBarData(x):
         xExpr = {
+            'predOptT'     : '(timeSpent-predOptT)',
             'optTime'      : '(timeSpent-optTime)',
+            'predOptM'     : '(earnedM-predOptM)',
             'optMoney'     : '(earnedM-optimalM)',
             'loptTime'     : '(timeSpent-locOptT)',
             'loptMoney'    : '(earnedM-locOptM)',
@@ -119,7 +127,9 @@ class DataPoint(models.Model):
     @staticmethod
     def queryBoxData(x, y):
         yExpr = {
+            'predOptT'     : '(timeSpent-predOptT)',
             'optTime'      : '(timeSpent-optTime)',
+            'predOptM'     : '(earnedM-predOptM)',
             'optMoney'     : '(earnedM-optimalM)',
             'loptTime'     : '(timeSpent-locOptT)',
             'loptMoney'    : '(earnedM-locOptM)',

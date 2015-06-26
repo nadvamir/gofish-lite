@@ -59,7 +59,9 @@ def dataAggregated(request):
     context_dict = {
         'choices': {
             'bar': {
+                'predOptT'     : 'Pre-designed Optimality of Time',
                 'optTime'      : 'Optimality of Time',
+                'predOptM'     : 'Pre-designed Opt. of Money',
                 'optMoney'     : 'Optimality of Money',
                 'loptTime'     : 'Local Opt. of Time',
                 'loptMoney'    : 'Local Opt. of Money',
@@ -74,10 +76,11 @@ def dataAggregated(request):
                 'gameNum'      : 'Game Number',
                 'moveCost'     : 'Moving Cost',
                 'endGame'      : 'End Game',
-                'level'        : 'Level of Game',
             },
             'boxY': {
+                'predOptT'     : 'Pre-designed Optimality of Time',
                 'optTime'      : 'Optimality of Time',
+                'predOptM'     : 'Pre-designed Opt. of Money',
                 'optMoney'     : 'Optimality of Money',
                 'loptTime'     : 'Local Opt. of Time',
                 'loptMoney'    : 'Local Opt. of Money',

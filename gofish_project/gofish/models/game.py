@@ -150,14 +150,17 @@ class Game(models.Model):
     # a method to log users performance
     def logPerformance(self, endGame = False):
         logger = logging.getLogger('gofish')
+        index = self.level['index']; w = self.level['weather']
 
         levelInfo   = self
         weather     = self.level['weather']
         pos         = self.level['position']
         timeSpent   = self.level['timeInLoc'][pos]
+        predOptT    = gamedef.OPT_TIMES[index][w]
         optimalTime = self.getOptimalTime(pos)
         localOptT   = self.getOptimalTime(pos, local=True)
         moneyEarned = int(self.getMoneyEarnedIn(pos, timeSpent))
+        predOptM    = int(self.getMoneyEarnedIn(pos, predOptT))
         optimalM    = int(self.getMoneyEarnedIn(pos, optimalTime))
         localOptM   = int(self.getMoneyEarnedIn(pos, localOptT))
         endGame     = '1' if endGame else '0'
@@ -166,8 +169,8 @@ class Game(models.Model):
 
         msg = [
             levelInfo, moveCost, endGame, weather,
-            timeSpent, optimalTime, localOptT,
-            moneyEarned, optimalM, localOptM,
+            timeSpent, predOptT, optimalTime, localOptT,
+            moneyEarned, predOptM, optimalM, localOptM,
             createdAt
         ]
 
@@ -253,21 +256,17 @@ class Game(models.Model):
 
     # a method that returns earnings based on optimal strategy
     def getOptEarnings(self, moveCost, local=False):
+        index = self.level['index']; w = self.level['weather']
+        optimalTime = gamedef.OPT_TIMES[index][w]
         time = gamedef.TOTAL_TIME + moveCost
-        money = 0
+        money = 0; pos = 0
 
-        for pos in range(len(self.level['yields'])):
-            time -= moveCost
-            if time <= 0:
-                return money
-
-            optimalTime = self.getOptimalTime(pos, local)
-            if optimalTime > time:
-                optimalTime = time
+        while time >= optimalTime + moveCost and pos < gamedef.MAP_SIZE - 1:
             money += int(self.getMoneyEarnedIn(pos, optimalTime))
-            time -= optimalTime
-
-        return money
+            time -= optimalTime + moveCost
+            pos += 1
+        
+        return money + int(self.getMoneyEarnedIn(pos, time))
 
     #############################################################
     # actions
