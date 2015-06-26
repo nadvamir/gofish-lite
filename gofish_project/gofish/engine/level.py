@@ -31,29 +31,31 @@ def get(index):
         'yields': getYields(index, weather, gameMap[0])
     }
 
-# move cost in this level
-def moveC(index):
-    return BOATS[LEVELS[index]['boat']]['mult']
-
 # optimal earnings in an average game
 def optEarnings(index, weather):
     vf = valueF(index, weather)
-    w = WEATHER[weather]['mult']
     b = moveC(index)
-    optT = w * b / 2 - b
+    optT = OPT_TIMES[index][weather]
     optE = sum([vf(i) for i in range(1, int(optT)+1)])
     return int(optE * TOTAL_TIME / (optT + b)) # a very rough estimate
 
 # fish value function for a game with given parameters
 def valueF(index, weather):
-    w = WEATHER[weather]['mult']
-    b = moveC(index)
     v = topValue(index)
-    return lambda x: v * exp(-2 * x / b / (w-2))
+    n = OPT_TIMES[index][weather]
+    b = moveC(index)
+    beta = n / (b + n)
+
+    g  = lambda x: v * pow(x, beta)
+    return lambda x: g(x) - g(x-1)
 
 # top value for a fish
 def topValue(index):
-    return INIT_VAL + BASE_VAL ** index
+    return LEVELS[index]['fishVal']
+
+# move cost in this level
+def moveC(index):
+    return BOATS[LEVELS[index]['boat']]['mult']
 
 # generate all yields, map is a 1d array of depths
 def getYields(index, weather, gameMap):

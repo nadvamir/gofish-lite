@@ -343,7 +343,7 @@ gameActions.actions = -> [{
 infoArea = {}
 
 # classes for different weathers
-infoArea.weather = ['fa-sun-o', 'fa-cloud', 'fa-sellsy']
+infoArea.weather = ['fa-sellsy', 'fa-cloud', 'fa-sun-o']
 
 # --------------------------------------------------------------
 # game:gameMap module

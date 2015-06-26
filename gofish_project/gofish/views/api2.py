@@ -77,7 +77,7 @@ def v2game(request):
         'map'       : game.level['map'],
         'caught'    : game.caught,
         'weather'   : game.level['weather'],
-        'weatherN'  : gamedef.WEATHER[game.level['weather']]['name'],
+        'weatherN'  : gamedef.WEATHER[game.level['weather']],
         'boat'      : game.level['boat'],
         'moveC'     : gamedef.BOATS[game.level['boat']]['mult'],
     }}

@@ -152,8 +152,7 @@ class Game(models.Model):
         logger = logging.getLogger('gofish')
 
         levelInfo   = self
-        weather     = int(
-                gamedef.WEATHER[self.level['weather']]['mult'])
+        weather     = self.level['weather']
         pos         = self.level['position']
         timeSpent   = self.level['timeInLoc'][pos]
         optimalTime = self.getOptimalTime(pos)
@@ -211,8 +210,7 @@ class Game(models.Model):
         gameNr    = self.player.numGames
         player    = self.player.user.id
         level     = self.level['index']
-        weather   = int(
-                gamedef.WEATHER[self.level['weather']]['mult'])
+        weather   = self.level['weather']
         moveCost  = int(lvl.moveC(self.level['index']))
         maxEarn   = int(self.getMaxEarnings(moveCost))
         optEarn   = self.getOptEarnings(moveCost)

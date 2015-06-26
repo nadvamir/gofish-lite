@@ -395,7 +395,7 @@ gameActions.actions = function() {
 
 infoArea = {};
 
-infoArea.weather = ['fa-sun-o', 'fa-cloud', 'fa-sellsy'];
+infoArea.weather = ['fa-sellsy', 'fa-cloud', 'fa-sun-o'];
 
 gameMap = {};
 

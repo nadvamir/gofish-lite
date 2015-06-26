@@ -5,9 +5,9 @@ TOTAL_TIME   = 50
 # threshold for moving into secondary fish
 LESSER_FISH  = 0.7
 # chance to catch a fish
-CHANCE_FISH  = 0.71
+CHANCE_FISH  = 0.91
 # how much chance diminishes per unit of depth
-CHANCE_DIM   = 0.07
+CHANCE_DIM   = 0.04
 # chance to fail to catch a fish
 CHANCE_FAIL  = 0.7
 # chance to catch a fake fish
@@ -18,15 +18,16 @@ FAKE_FISH    = 'shoe'
 NO_FISH      = 'none'
 # SD for fish value
 FISH_SD      = 0.05
-# initial value of a fish
-INIT_VAL     = 20
-# base value for a level
-BASE_VAL     = 10
+# time spent fishing in each location for all weather conditions
+OPT_TIMES    = [
+    [4, 8, 12],
+    [4, 8, 12],
+    [3, 6, 9],
+    [2, 4, 5]
+]
 # implied performance (optimality) of players
-IMPLIED_PERF = 1.0
+IMPLIED_PERF = 0.8
 # fishing cost is implied 1
-# optimal fishing time is theoretically BOAT x WEATHER
-# but in reality they seem to just correlate strongly
 BOATS        = [{
     'name': 'Raft',
     'mult': 8.0
@@ -37,39 +38,36 @@ BOATS        = [{
     'name': 'Motor boat',
     'mult': 2.0
 }]
-WEATHER      = [{
-    'name': 'Sunny',
-    'mult': 5.0
-}, {
-    'name': 'Cloudy',
-    'mult': 3.5
-}, {
-    'name': 'Rainy',
-    'mult': 2.5
-}]
+
+WEATHER      = ['Rainy', 'Cloudy', 'Sunny']
+
 LEVELS       = [{
     'name': 'Local Pond',
     'toPlay': 1,
     'boat': 0,
     'maxdepth': 3,
+    'fishVal': 20,
     'fish': ['bream', 'bass'] # there must always be exactly 2 fish
 }, {
     'name': 'Lake',
     'toPlay': 5,
     'boat': 0,
     'maxdepth': 5,
+    'fishVal': 80,
     'fish': ['pike', 'bream']
 }, {
     'name': 'River',
     'toPlay': 5,
     'boat': 1,
     'maxdepth': 7,
+    'fishVal': 200,
     'fish': ['catfish', 'salmon']
 }, {
     'name': 'Sea',
     'toPlay': 5,
     'boat': 2,
     'maxdepth': 9,
+    'fishVal': 800,
     'fish': ['tuna', 'cod']
 }]
 
