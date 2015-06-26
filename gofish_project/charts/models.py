@@ -14,6 +14,8 @@ class DataPoint(models.Model):
     playerLvl = models.IntegerField()
     # game level index
     level     = models.IntegerField()
+    # position
+    pos       = models.IntegerField()
     # move cost for the player
     moveCost  = models.IntegerField()
     # is this an endgame location
@@ -64,19 +66,20 @@ class DataPoint(models.Model):
             gameNum   = int(line[1]),
             playerLvl = int(line[2]),
             level     = int(line[3]),
-            moveCost  = int(line[4]),
-            endGame   = int(line[5]),
-            weather   = int(line[6]),
-            depth     = int(line[7]),
-            timeSpent = int(line[8]),
-            predOptT  = int(line[9]),
-            optTime   = int(line[10]),
-            locOptT   = int(line[11]),
-            earnedM   = int(line[12]),
-            predOptM  = int(line[13]),
-            optimalM  = int(line[14]),
-            locOptM   = int(line[15]),
-            createdAt = int(line[16]))
+            pos       = int(line[4]),
+            moveCost  = int(line[5]),
+            endGame   = int(line[6]),
+            weather   = int(line[7]),
+            depth     = int(line[8]),
+            timeSpent = int(line[9]),
+            predOptT  = int(line[10]),
+            optTime   = int(line[11]),
+            locOptT   = int(line[12]),
+            earnedM   = int(line[13]),
+            predOptM  = int(line[14]),
+            optimalM  = int(line[15]),
+            locOptM   = int(line[16]),
+            createdAt = int(line[17]))
 
         # store it
         point.save()
