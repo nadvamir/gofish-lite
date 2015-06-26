@@ -1,39 +1,43 @@
-from math import sqrt, exp
-
-v = 100.0
+from math import *
+import matplotlib.pyplot as plt
 
 # showing how many times to fish is optimal
-# bs -- boats, i.e. moving cost (1 == fishing cost)
-# ws -- weathers, the larger -- the longer to sit in one spot
-def printTests(bs, ws):
-    print "b/w %4.0f %4.0f %4.0f" % (ws[0], ws[1], ws[2])
-    for i in range(len(bs)):
-        b = bs[i]
-        v = 20 + 10 ^ (i+1)
+vals = [20, 80, 200, 800]
+boats = [8.0, 8.0, 4.0, 2.0]
+times = [
+    [4, 8, 12],
+    [4, 8, 12],
+    [3, 6, 9],
+    [2, 4, 5]
+]
 
-        print "%3.0f" % (b),
+for i in range(4):
+    v = vals[i]
+    b = boats[i]
+    for j in range(3):
+        n = times[i][j]
+        beta = n / (b + n)
 
-        for w in ws:
-            #df = lambda x: v * exp(-x / b / (w-1))
-            df = lambda x: v * exp(-2 * x / b / (w - 2))
+        print "%4.2f" % (beta),
 
-            s = 0.0; opt = 0
-            ratio = 0.0
-            for i in range(1, 50):
-                s += round(df(i), 0)
-                if (s / (b + i) < ratio):
-                    opt = i - 1
-                    break
-                else:
-                    ratio = s / (b + i)
+        g  = lambda x: v * pow(x, beta)
+        dg = lambda x: g(x) - g(x-1)
+        df = lambda x: v * beta * pow(x, beta - 1)
 
-            print "%4.0f" % (opt),
-        print
+        xs = range(1, 20 + int(b))
+        ss = [0] * int(b)
+        s = 0.0; opt = 0
+        ratio = 0.0
+        for k in range(1, 20):
+            s += round(dg(k))
+            ss.append(s)
+#            print "%4.4f" % (s/(b+k)),
+            if (s / (b + k) < ratio):
+                opt = k - 1
+                break
+            else:
+                ratio = s / (b + k)
+
+        print "%4.0f" % (opt),#, "%4.4f" % (s), "%4.4f" % dg(1),
     print
-
-printTests([2.0, 4.0, 8.0], [2.5, 3.0, 4.0])
-printTests([2.0, 4.0, 8.0], [2.5, 3.5, 5.0]) # this one seems reasonable
-printTests([2.0, 6.0, 12.0], [2.5, 4.0, 6.0])
-printTests([2.0, 4.0, 8.0], [2.5, 3.8, 5.5])
-printTests([2.0, 4.0, 6.0], [2.5, 3.0, 4.0])
-printTests([2.0, 4.0, 8.0], [2.5, 4.0, 6.0])
+        
