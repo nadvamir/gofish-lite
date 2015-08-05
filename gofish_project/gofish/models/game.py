@@ -266,6 +266,9 @@ class Game(models.Model):
             money += int(self.getMoneyEarnedIn(pos, optimalTime))
             time -= optimalTime + moveCost
             pos += 1
+
+        # last move
+        time = time - moveCost if time > moveCost else 0
         
         return money + int(self.getMoneyEarnedIn(pos, time))
 
