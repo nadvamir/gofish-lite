@@ -5,6 +5,9 @@ urlpatterns = patterns('',
         # index page, to show the options
         url(r'^$', views.index, name='index'),
 
+        url(r'^print_logs/$', views.printLogs),
+        url(r'^print_end_logs/$', views.printEndLogs),
+
         # consumes log and creates database entries from it
         url(r'^parse_log/$', views.parseLog),
         # consumes end log and creates database entries from it

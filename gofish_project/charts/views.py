@@ -25,6 +25,30 @@ def index(request):
     return render_to_response('charts/index.html', context_dict, context)
 
 @user_passes_test(lambda u: u.is_superuser)
+def printLogs(request):
+    logData = DataPoint.csvHeader() + "\n"
+    # parse the log file
+    with open('gofish.log', 'r') as f:
+        logData += f.read()
+
+    # report on the number of processed lines
+    context = RequestContext(request)
+    context_dict = {'logData': logData}
+    return render_to_response('charts/log_print.csv', context_dict, context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def printEndLogs(request):
+    logData = EndGame.csvHeader() + "\n"
+    # parse the log file
+    with open('end.log', 'r') as f:
+        logData += f.read()
+
+    # report on the number of processed lines
+    context = RequestContext(request)
+    context_dict = {'logData': logData}
+    return render_to_response('charts/log_print.csv', context_dict, context)
+
+@user_passes_test(lambda u: u.is_superuser)
 def parseLog(request):
     numEntries = 0
     logCopy = 'logs-perf/gofish-' + str(time.time()) + '.log'

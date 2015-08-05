@@ -51,6 +51,11 @@ class DataPoint(models.Model):
         d['_state'] = None
         return d
 
+    @staticmethod
+    def csvHeader():
+        h = ['userId', 'gameNum', 'playerLvl', 'level', 'pos', 'moveCost', 'endGame', 'weather', 'depth', 'timeSpent', 'predOptT', 'optTime', 'locOptT', 'earnedM', 'predOptM', 'optimalM', 'locOptM', 'createdAt']
+        return ','.join(h)
+
     #############################################################
     # creators
     #############################################################
@@ -196,6 +201,11 @@ class EndGame(models.Model):
 
     def __unicode__(self):
         'endgame'
+
+    @staticmethod
+    def csvHeader():
+        h = ['userId', 'gameNum', 'level', 'weather', 'moveCost', 'earnedM', 'maxM', 'optimalM', 'locOptM']
+        return ','.join(h)
 
     #############################################################
     # creators
