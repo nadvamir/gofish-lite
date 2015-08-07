@@ -7,14 +7,14 @@ class Achievement(models.Model):
     # value of an achievement
     value  = models.FloatField()
     # stars rating when relevant
-    rating = models.IntegerField()
+    rating = models.FloatField()
 
     #############################################################
     # Achievement API
     #############################################################
     # insert or update achievement, if better
     @staticmethod
-    def upsert(player, name, value=0.0, rating=0):
+    def upsert(player, name, value=0.0, rating=0.0):
         ach = None
         # update if exists
         try:

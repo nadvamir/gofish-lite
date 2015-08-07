@@ -90,8 +90,8 @@ class Game(models.Model):
                 earned += fish['value']
                 # also, store it if it is a trophy
                 self.player.storeAchievement(fish['id'],
-                                             fish['weight'],
-                                             fish['value'])
+                                             fish['value'],
+                                             fish['weight'])
 
         # log endgame performance
         # overall statistics

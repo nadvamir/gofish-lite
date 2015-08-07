@@ -96,8 +96,8 @@ def v2trophies(request):
         trophy = trophy.toDict() if None != trophy else {'value': 0.0, 'rating': 0}
         response['userTrophies'].append({
             'name'   : fish['name'],
-            'value'  : trophy['rating'],
-            'weight' : trophy['value'],
+            'value'  : trophy['value'],
+            'weight' : trophy['rating'],
         })
 
         # add best overall trophies
@@ -105,8 +105,8 @@ def v2trophies(request):
         trophy = trophy[0].toDict() if 0 != len(trophy) else {'value': 0.0, 'rating': 0}
         response['gameTrophies'].append({
             'name'   : fish['name'],
-            'value'  : trophy['rating'],
-            'weight' : trophy['value'],
+            'value'  : trophy['value'],
+            'weight' : trophy['rating'],
         })
 
     return HttpResponse(json.dumps(response), content_type="application/json")
