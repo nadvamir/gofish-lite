@@ -23,7 +23,8 @@ OPT_TIMES    = [
     [4, 8, 12],
     [4, 8, 12],
     [3, 6, 9],
-    [2, 4, 6]
+    [2, 4, 6],
+    [3, 6, 9]
 ]
 # implied performance (optimality) of players
 IMPLIED_PERF = 0.8
@@ -50,25 +51,32 @@ LEVELS       = [{
     'fish': ['bream', 'bass'] # there must always be exactly 2 fish
 }, {
     'name': 'Lake',
-    'toPlay': 5,
+    'toPlay': 3,
     'boat': 0,
     'maxdepth': 5,
     'fishVal': 80,
     'fish': ['pike', 'bream']
 }, {
     'name': 'River',
-    'toPlay': 5,
+    'toPlay': 3,
     'boat': 1,
     'maxdepth': 7,
     'fishVal': 200,
     'fish': ['catfish', 'salmon']
 }, {
     'name': 'Sea',
-    'toPlay': 5,
+    'toPlay': 3,
     'boat': 2,
     'maxdepth': 9,
     'fishVal': 800,
     'fish': ['tuna', 'cod']
+}, {
+    'name': 'Mystery Level',
+    'toPlay': 1,
+    'boat': 2,
+    'maxdepth': 9,
+    'fishVal': 2000,
+    'fish': ['kraken', 'tuna']
 }]
 
 FISH         = {
@@ -107,6 +115,10 @@ FISH         = {
     'cod': {
         'name': 'Cod',
         'weight': 10.0,
+    },
+    'kraken': {
+        'name': 'Kraken',
+        'weight': 10000.0,
     },
 }
 

@@ -228,6 +228,10 @@ div.fish-img.Tuna {
     background-image: url('/static/images/tuna.gif');
     /*width: 52px;*/
 }
+div.fish-img.Kraken {
+    background-image: url('/static/images/kraken.png');
+    /*width: 52px;*/
+}
 
 /* ----------------------------------------------------------- */
 #game-map {
