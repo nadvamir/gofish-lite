@@ -68,12 +68,20 @@ def genYield(index, weather, depth):
 
 # get a particular fish
 def getFish(index, vf, i, depth):
+    global CHANCE_FISH, CHANCE_DIM
+    # HACK:
+    # inject a kraken level
+    CHANCE_FISH = CHANCE_FISH if index != 4 else 0.125
+    CHANCE_DIM = CHANCE_DIM if index != 4 else CHANCE_FISH / 5
+
     refVal = vf(1) / CHANCE_FISH
     val = vf(i)
 
     # value needs to be normalised against the chance to catch
     # a fish, so that the expected value function is as predicted
-    chance = CHANCE_FISH - CHANCE_DIM * depth
+    chance = CHANCE_FISH - CHANCE_DIM * depth if index != 4 else CHANCE_FISH - CHANCE_DIM * i
+    chance = chance if chance > 0 else 0.01
+
     val /= chance
 
     fishInd = 1 if val/refVal < LESSER_FISH else 0
